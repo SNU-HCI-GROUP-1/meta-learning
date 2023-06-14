@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
+import AnswerButton from './AnswerButton';
 import testQuestions from './testQuestions';
 
 type Props = {
@@ -10,40 +11,20 @@ type Props = {
   setAnswers: (answers: any[]) => void;
 }
 
-const QUESTION_COUNT = 10;
+export const QUESTION_COUNT = 10;
+const ANSWER_TYPE = {
+  O: 'O',
+  X: 'X',
+  EMPTY: null,
+}
+const ANSWER_TYPE_LIST = [ANSWER_TYPE.O, ANSWER_TYPE.X];
 
 const Questions = ({ answers, setAnswers }: Props) => {
   const [questionNumber, setQuestionNumber] = React.useState(0);
   const questions = testQuestions;
   const navigate = useNavigate();
-  const AnswerButton = ({ 
-    answerType, questionNumber 
-  }: { answerType: string, questionNumber: number }) => {
-    return (
-      <StyledButton
-        style={{
-          borderColor: 'midnightblue',
-          width: 'min(30vw, 300px)',
-          backgroundColor: answers[questionNumber] === answerType 
-            ? 'midnightblue' : 'white',
-          color: answers[questionNumber] === answerType
-            ? 'white' : 'black',
-        }}
-        onClick={() => {
-          if (answers[questionNumber] === answerType) {
-            answers[questionNumber] = null;
-          } else {
-            answers[questionNumber] = answerType;
-          }
-          setAnswers([...answers]);
-        }}
-      >
-        {answerType}
-      </StyledButton>
-    )
-  }
   const onSubmit = () => {
-    if (answers.filter((a) => a === 'O' || a === 'X').length !== 5) {
+    if (answers.filter((a) => ANSWER_TYPE_LIST.includes(a)).length !== QUESTION_COUNT) {
       alert('Please answer all questions.');
       return;
     }
@@ -53,6 +34,9 @@ const Questions = ({ answers, setAnswers }: Props) => {
       return;
     }
   }
+  const getCircleColor = (idx: number) => (
+    ANSWER_TYPE_LIST.includes(answers[idx]) ? 'lightblue' : 'lightgray'
+  );
   return (
     <Container>
       <Header innerText='Questions' />
@@ -106,14 +90,16 @@ const Questions = ({ answers, setAnswers }: Props) => {
           justifyContent: 'center',
           gap: '5vw',
         }}>
-          <AnswerButton
-            answerType='O'
-            questionNumber={questionNumber}
-          />
-          <AnswerButton
-            answerType='X'
-            questionNumber={questionNumber}
-          />
+          {
+            ANSWER_TYPE_LIST.map((answerType) => (
+              <AnswerButton
+                answers={answers}
+                answerType={answerType}
+                questionNumber={questionNumber}
+                setQuestionNumber={setQuestionNumber}
+                setAnswers={setAnswers}
+              />))
+          }
         </div>
         <div style={{
           minWidth: '240px',
@@ -124,24 +110,13 @@ const Questions = ({ answers, setAnswers }: Props) => {
           gap: window.innerWidth < 500 ? 5 : 15,
           marginTop: '5vh',
         }}>
-          <div
-            style={{
-              cursor: questionNumber === 0 ? '' : 'pointer',
-              userSelect: 'none',
-              marginRight: '2vw',
-              minWidth: '60px',
-            }}
-            onClick={() => setQuestionNumber(questionNumber - 1 < 0 ? 0 : questionNumber - 1)}
-          >
-            {questionNumber === 0 ? '' : '<< Prev'}
-          </div>
           {Array(10).fill(0).map((_, i) => (
             <div
               style={{
                 marginTop: '0.5vh',
                 borderRadius: '50%',
                 borderColor: 'midnightblue',
-                backgroundColor: i === questionNumber ? 'midnightblue' : 'lightgray',
+                backgroundColor: i === questionNumber ? 'midnightblue' : getCircleColor(i),
                 width: 'min(3vw, 20px)',
                 height: 'min(3vw, 20px)',
                 cursor: 'pointer',
@@ -150,20 +125,6 @@ const Questions = ({ answers, setAnswers }: Props) => {
             >
             </div>
           ))}
-          <div
-            style={{
-              cursor: questionNumber === QUESTION_COUNT - 1 ? '' : 'pointer',
-              userSelect: 'none',
-              marginLeft: '2vw',
-              minWidth: '60px',
-              textAlign: 'right',
-            }}
-            onClick={() => setQuestionNumber(
-              questionNumber + 1 > QUESTION_COUNT - 1 ? QUESTION_COUNT - 1 : questionNumber + 1,
-            )}
-          >
-            {questionNumber === QUESTION_COUNT - 1 ? '' : 'Next >>'}
-          </div>
         </div>
       </div>
     </Container>
