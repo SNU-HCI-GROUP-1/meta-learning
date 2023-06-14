@@ -7,7 +7,7 @@ type Props = {
 const Container = ({ children }: Props) => {
   return (
     <div style={{
-      backgroundColor: '#282c34',
+      backgroundColor: 'white',
       backgroundPosition: 'center',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',

@@ -9,8 +9,8 @@ type Props = {
 
 const Checks = ({ answers }: Props) => {
   answers = !answers?.length 
-    || answers.filter(a => a === 'O' || a === 'X').length !== 5 
-      ? ['O','X','O','X','O'] : answers;
+    || answers.filter(a => a === 'O' || a === 'X').length !== 10
+      ? ['O','X','O','X','O','O','O','O','O','O'] : answers;
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const questions = testQuestions;
   const onQuestionClick = (questionNumber: number) => {
