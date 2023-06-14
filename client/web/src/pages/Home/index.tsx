@@ -6,6 +6,7 @@ import UploadFileButton from '../../UploadFile/Button';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../Components/Container';
 import { timeout } from '../../lib/time';
+import Header from '../../Components/Header';
 
 const Home = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -20,20 +21,27 @@ const Home = () => {
   }
   return (
     <Container>
-      <header className="App-header">
+      <Header innerText='META LEARNING' />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '80%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <img src={logo} className="App-logo" alt="logo" />
-        <div>
-          {
-            isLoading ? (
-              <LoaderComponent />
-            ) : (
-              <UploadFileButton
-                handleUpload={handleUpload}
-              />
-            )
-          }
-        </div>
-      </header>
+        {
+          isLoading ? (
+            <LoaderComponent />
+          ) : (
+            <UploadFileButton
+              handleUpload={handleUpload}
+            />
+          )
+        }
+      </div>
     </Container>
   );
 }

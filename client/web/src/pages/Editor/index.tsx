@@ -6,6 +6,7 @@ import Container from '../../Components/Container';
 import TextEditor from './TextEditor';
 import LoaderComponent from '../../Components/Loader';
 import { timeout } from '../../lib/time';
+import Header from '../../Components/Header';
 
 const Editor = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,7 @@ const Editor = () => {
   }
   return (
     <>
+      <Header innerText='Edit Script' />
       {
         isLoading ? (
           <Container>
