@@ -12,7 +12,6 @@ const Container = ({ children }: Props) => {
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       width: '100vw',
-      height: '100vh'
     }}>
       {children}
     </div>
