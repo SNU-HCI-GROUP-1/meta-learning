@@ -135,7 +135,7 @@ const Checks = ({ answers }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
-          marginTop: '2vh',
+          marginTop: 10,
         }}
       >
         <StyledButton
