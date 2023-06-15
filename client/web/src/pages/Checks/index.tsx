@@ -2,7 +2,7 @@ import { useState } from 'react';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
-import Question from '../../Components/Question';
+import Question from '../../Components/Question/Question';
 import testQuestions from '../Questions/testQuestions';
 import './index.css';
 

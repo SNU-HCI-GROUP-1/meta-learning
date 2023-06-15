@@ -5,7 +5,7 @@ import Header from '../../Components/Header';
 import AnswerButton from './AnswerButton';
 import testQuestions from './testQuestions';
 import ConfirmModal from './ConfirmModal';
-import Question from '../../Components/Question';
+import Question from '../../Components/Question/Question';
 
 type Props = {
   answers: any[];
@@ -31,7 +31,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
   }
   const isNextQuestionAnswered = (idx: number) => {
     if (idx === QUESTION_COUNT - 1) return true;
-    return answers[idx + 1] !== null;
+    return answers.slice(idx, QUESTION_COUNT - 1).filter((a) => a === null).length === 0;
   }
   const openModalOnAnswer = async () => {
     if (answers.filter((a) => a !== null).length === answers.length) {
@@ -75,7 +75,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
           questionNumber={questionNumber}
         />
         <div style={{
-          marginTop: '4vh',
+          marginTop: window.innerWidth < 500 ? 20 : 40,
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -103,7 +103,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
           flexDirection: 'row',
           justifyContent: 'center',
           gap: window.innerWidth < 500 ? 10 : 15,
-          marginTop: '4vh',
+          marginTop: window.innerWidth < 500 ? 20 : 40,
         }}>
           {Array(10).fill(0).map((_, i) => (
             <div
