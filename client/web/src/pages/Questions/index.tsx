@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
 import AnswerButton from './AnswerButton';
 import testQuestions from './testQuestions';
+import ConfirmModal from './ConfirmModal';
 
 type Props = {
   answers: any[];
@@ -21,24 +21,22 @@ const ANSWER_TYPE_LIST = [ANSWER_TYPE.O, ANSWER_TYPE.X];
 
 const Questions = ({ answers, setAnswers }: Props) => {
   const [questionNumber, setQuestionNumber] = React.useState(0);
+  const [modalIsOpen, setModalIsOpen] = React.useState(false);
+
   const questions = testQuestions;
-  const navigate = useNavigate();
   const onSubmit = () => {
-    if (answers.filter((a) => ANSWER_TYPE_LIST.includes(a)).length !== QUESTION_COUNT) {
-      alert('Please answer all questions.');
-      return;
-    }
-    if (window.confirm('Submit?') === true) {
-      navigate('/checks');
-    } else {
-      return;
-    }
+    setModalIsOpen(true);
   }
   const getCircleColor = (idx: number) => (
     ANSWER_TYPE_LIST.includes(answers[idx]) ? 'lightblue' : 'lightgray'
   );
   return (
     <Container>
+      <ConfirmModal
+        isOpen={modalIsOpen}
+        setIsOpen={setModalIsOpen}
+        answers={answers}
+      />
       <Header innerText='Questions' />
       <div style={{
         width: '80%',

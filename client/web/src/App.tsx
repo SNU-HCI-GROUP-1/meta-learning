@@ -10,7 +10,7 @@ import Home from './pages/Home';
 import Questions from './pages/Questions';
 
 function App() {
-  const [answers, setAnswers] = React.useState<any[]>(Array(5).fill(null));
+  const [answers, setAnswers] = React.useState<any[]>(Array(10).fill(null));
   return (
     <BrowserRouter>
       <Routes>

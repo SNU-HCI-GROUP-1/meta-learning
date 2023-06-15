@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
+import Header from '../../Components/Header';
 import testQuestions from '../Questions/testQuestions';
 
 type Props = {
@@ -19,6 +20,9 @@ const Checks = ({ answers }: Props) => {
 
   return (
     <Container>
+      <Header
+        innerText='Check Answer'
+      />
       <h1 style={{
         color: 'white',
         paddingTop: '3vh',
@@ -41,9 +45,12 @@ const Checks = ({ answers }: Props) => {
           <tr>
             <th style={{width: '25%'}}>Question</th>
             {
-              Array(5).fill(0).map((q, idx) => {
+              Array(10).fill(0).map((q, idx) => {
                 return (
                   <th
+                    style={{
+                      width: '7.5%',
+                    }}
                     onClick={() => onQuestionClick(idx)}
                   >{idx + 1}</th>
                 )
@@ -75,6 +82,7 @@ const Checks = ({ answers }: Props) => {
         minWidth: '300px',
         backgroundColor: 'white',
         height: '30vh',
+        border: '1px solid lightgray',
       }}>
         <div style={{
           display: 'flex',
