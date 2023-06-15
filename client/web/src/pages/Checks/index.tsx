@@ -2,7 +2,9 @@ import { useState } from 'react';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
+import Question from '../../Components/Question';
 import testQuestions from '../Questions/testQuestions';
+import './index.css';
 
 type Props = {
   answers: any[];
@@ -17,99 +19,114 @@ const Checks = ({ answers }: Props) => {
   const onQuestionClick = (questionNumber: number) => {
     setSelectedQuestion(questionNumber);
   }
+  const isCorrect = (idx: number) => answers[idx] === questions[idx].answer;
+
+  const TableData = ({ idx }: { idx: number }) => (
+    <div 
+      style={{
+        textAlign: 'center',
+        cursor: 'pointer',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: selectedQuestion === idx ? '2px dashed midnightblue' : '2px solid white',
+        borderRadius: '10px',
+        minWidth: '40px',
+        width: window.innerWidth < 768 ? 60 : 100,
+        height: window.innerWidth < 768 ? 60 : 100,
+        position: 'relative',
+      }}
+      onClick={() => onQuestionClick(idx)}
+    >
+      {
+        <div style={{ 
+          textAlign: 'center',
+        }}>
+          <div style={{
+            position: 'absolute',
+            width: '100%',
+          }}>
+            {idx + 1}
+          </div>
+          <div style={{
+            position: 'absolute',
+            width: '100%',
+            color: 'red',
+            opacity: '70%',
+          }}>
+            {isCorrect(idx) ? 'O' : 'X'}
+          </div>
+        </div>
+      }
+    </div>
+  )
 
   return (
     <Container>
       <Header
-        innerText='Check Answer'
+        innerText='Result'
       />
-      <h1 style={{
-        color: 'white',
-        paddingTop: '3vh',
-        marginBottom: '2vh',
-        textAlign: 'center',
-      }}>
-        Results
-      </h1>
-      <table style={{
-        width: '80%',
+      <div style={{
+        width: '60%',
         minWidth: '300px',
+        maxWidth: '700px',
         margin: 'auto',
+        marginTop: window.innerWidth < 500 ? '2vh' : '5vh',
         backgroundColor: 'white',
-        border: '1px solid lightgray',
-        marginBottom: '5vh',
+        marginBottom: window.innerWidth < 500 ? '2vh' : '5vh',
+        fontSize: window.innerWidth < 768 ? 40 : 60,
       }}>
-        <thead style={{
-          border: '1px solid lightgray',
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: window.innerWidth > 768 ? '2vw' : 0,
         }}>
-          <tr>
-            <th style={{width: '25%'}}>Question</th>
-            {
-              Array(10).fill(0).map((q, idx) => {
-                return (
-                  <th
-                    style={{
-                      width: '7.5%',
-                    }}
-                    onClick={() => onQuestionClick(idx)}
-                  >{idx + 1}</th>
-                )
-              })
-            }
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{textAlign: 'center'}}>Your Answer</td>
-            {
-              answers.map((a, idx) => {
-                return (
-                  <td 
-                    style={{
-                      textAlign: 'center',
-                    }}
-                    onClick={() => onQuestionClick(idx)}
-                  >{a}</td>
-                )
-              })
-            }
-          </tr>
-        </tbody>
-      </table>
+          {
+            answers.slice(0, 5).map((a, idx) => (
+              <TableData idx={idx} />
+            ))
+          }
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: window.innerWidth > 768 ? '2vw' : 0,
+        }}>
+          {
+            answers.slice(5).map((a, idx) => (
+              <TableData idx={idx + 5} />
+            ))
+          }
+        </div>
+      </div>
       <div style={{
         margin: 'auto',
         width: '80%',
         minWidth: '300px',
         backgroundColor: 'white',
-        height: '30vh',
-        border: '1px solid lightgray',
       }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          marginRight: '2vh',
-          marginLeft: '2vh',
-          gap: '1vh',
-          height: '30vh',
-          textOverflow: 'scroll',
-        }}>
-          <h1 style={{
-            textAlign: 'center',
-            marginBottom: '1vh',
-          }}>
-            <b>Question {selectedQuestion + 1}</b>
-          </h1>
-          <h1 style={{
-            overflow: 'scroll',
-          }}>
-            {questions[selectedQuestion].question}
-            <br />
-            <br />
-            Answer: {questions[selectedQuestion].answer}
-            <br />
-            Yours: {answers[selectedQuestion]}
-          </h1>
-        </div>
+        <Question
+          question={
+            <div>
+              {questions[selectedQuestion].question}
+              <br /><br />
+              <div>
+                <b>Your Answer: </b> {answers[selectedQuestion]}
+              </div>
+              <div
+                style={{
+                  color: isCorrect(selectedQuestion) ? 'green' : 'red',
+                }}
+              >
+                <b>Correct Answer: </b> {questions[selectedQuestion].answer}
+              </div>
+            </div>
+          }
+          questionNumber={selectedQuestion}
+        />
       </div>
       <div
         style={{
