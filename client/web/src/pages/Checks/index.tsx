@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { saveAs } from 'file-saver';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
@@ -16,6 +17,13 @@ const Checks = ({ answers }: Props) => {
   const onQuestionClick = (questionNumber: number) => {
     setSelectedQuestion(questionNumber);
   }
+  const handleDownload = () => {
+    const text = questions.map((q, idx) => (
+      `Q${idx + 1}. ${q.question}\nA: ${q.answer}\n\n`
+    )).join('');
+    const file = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    saveAs(file, 'questions.txt');
+  };
   const isCorrect = (idx: number) => answers[idx] === questions[idx].answer;
 
   const TableData = ({ idx }: { idx: number }) => (
@@ -138,7 +146,7 @@ const Checks = ({ answers }: Props) => {
         }}
       >
         <StyledButton
-          onClick={() => window.location.href = '/editor'}
+          onClick={() => handleDownload()}
         >
           Download Questions
         </StyledButton>
