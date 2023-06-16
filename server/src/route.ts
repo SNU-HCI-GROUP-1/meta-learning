@@ -1,4 +1,8 @@
 import { Router } from 'express';
 
+import { sendQuestions } from './gpt/controller';
+import { generateStt } from './stt/generateSTT';
+
 export default Router()
-  .use('/', (req, res) => {});
+  .get('/generate_stt', sendQuestions)
+  .post('/generate_questions', generateStt);

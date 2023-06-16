@@ -1,8 +1,7 @@
 // server with express using 3000
-import express from 'express';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 
-export default (route: any, options?: any) => {
+export default (route: any) => {
   const app = express();
   app.use(route);
   app.get('/', (req: Request, res: Response) => {
@@ -11,4 +10,4 @@ export default (route: any, options?: any) => {
     });
   });
   return app;
-}
+};
