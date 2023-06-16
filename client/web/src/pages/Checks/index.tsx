@@ -2,6 +2,7 @@ import { useState } from 'react';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import testQuestions from '../Questions/testQuestions';
+import Header from '../../Components/Header';
 
 type Props = {
   answers: any[];
@@ -19,6 +20,7 @@ const Checks = ({ answers }: Props) => {
 
   return (
     <Container>
+      <Header innerText='Edit Script' page={4} />
       <h1 style={{
         color: 'white',
         paddingTop: '3vh',

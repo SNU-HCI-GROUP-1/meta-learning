@@ -55,7 +55,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
   }
   return (
     <Container>
-      <Header innerText='Questions' />
+      <Header innerText='Questions' page={3} />
       <div style={{
         width: '80%',
         alignContent: 'center',
