@@ -31,7 +31,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
   }
   const isNextQuestionAnswered = (idx: number) => {
     if (idx === QUESTION_COUNT - 1) return true;
-    return answers.slice(idx + 1, QUESTION_COUNT - 1).filter((a) => a === null).length === 0;
+    return answers.slice(idx + 1).filter((a) => a === null).length === 0;
   }
   const openModalOnAnswer = async () => {
     if (answers.filter((a) => a !== null).length === answers.length) {
