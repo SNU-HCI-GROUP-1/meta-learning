@@ -41,6 +41,7 @@ const Checks = ({ answers }: Props) => {
           <div style={{
             position: 'absolute',
             width: '100%',
+            color: selectedQuestion === idx ? 'black' : 'gray',
           }}>
             {idx + 1}
           </div>

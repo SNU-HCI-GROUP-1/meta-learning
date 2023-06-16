@@ -38,7 +38,7 @@ const Question = ({ question, questionNumber }: Props) => {
         }}
         onClick={() => setModalIsOpen(true)}
       >
-        <img src="/siren.png" alt="siren"/>
+        <img src="/siren.avif" alt="siren"/>
       </div>
       <div style={{
         margin: window.innerWidth < 768 ? window.innerWidth < 425 ? 23 : 25 : 30,

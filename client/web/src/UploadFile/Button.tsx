@@ -21,6 +21,7 @@ const UploadFileButton = ({ handleUpload }: Props) => {
         파일 업로드
       </StyledButton>
       <input type="file"
+        accept='.mp3'
         ref={hiddenFileInput}
         onChange={(event) => handleUpload((event.target.files || [])[0])}
         style={{ display: "none" }} 
