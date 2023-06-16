@@ -4,8 +4,8 @@ import speech from '@google-cloud/speech';
 
 const client = new speech.SpeechClient(
   {
-    key: '',
-    projectId: '',
+    key: process.env.GCP_CLIENT_KEY,
+    projectId: process.env.GCP_PROJECT_ID,
   },
 );
 
