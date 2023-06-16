@@ -1,13 +1,15 @@
 import Modal from 'react-modal';
 import StyledButton from '../../Components/Button';
+import { sendReq } from '../../sendReq';
 import './index.css';
 
 type Props = {
+  currentQuestion: { question: string, answer: string };
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-const ReportModal = ({ isOpen, setIsOpen }: Props) => {
+const ReportModal = ({ currentQuestion, isOpen, setIsOpen }: Props) => {
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -57,6 +59,7 @@ const ReportModal = ({ isOpen, setIsOpen }: Props) => {
           Do you want to report question?
         </div>
         <textarea
+          id={'Reason Text'}
           rows={4}
           placeholder={'Enter Reason'}
           style={{
@@ -83,7 +86,14 @@ const ReportModal = ({ isOpen, setIsOpen }: Props) => {
             fontSize: 'min(3vw, 18px)',
             width: 90,
           }}
-          onClick={() => {}}
+          onClick={() => {
+            sendReq('POST', '/send_report', {
+              question: currentQuestion.question,
+              answer: currentQuestion.answer,
+              reason: (document.getElementById('Reason Text') as HTMLTextAreaElement).value,
+            });
+            closeModal();
+          }}
         >
           Submit
         </StyledButton>

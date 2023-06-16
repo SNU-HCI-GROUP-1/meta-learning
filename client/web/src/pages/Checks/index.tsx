@@ -115,7 +115,8 @@ const Checks = ({ answers }: Props) => {
         backgroundColor: 'white',
       }}>
         <Question
-          question={
+          question={questions[selectedQuestion]}
+          questionInner={
             <div>
               {questions[selectedQuestion].question}
               <br /><br />

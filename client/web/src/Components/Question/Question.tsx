@@ -2,11 +2,12 @@ import React, { ReactNode } from 'react'
 import ReportModal from './ReportModal';
 
 type Props = {
-  question: string | ReactNode,
+  question: { question: string, answer: string },
+  questionInner: string | ReactNode,
   questionNumber: number,
 }
 
-const Question = ({ question, questionNumber }: Props) => {
+const Question = ({ question, questionInner, questionNumber }: Props) => {
   const [modalIsOpen, setModalIsOpen] = React.useState(false);
 
 
@@ -22,7 +23,11 @@ const Question = ({ question, questionNumber }: Props) => {
       overflow: 'scroll',
       position: 'relative',
     }}>
-      <ReportModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
+      <ReportModal
+        currentQuestion={question}
+        isOpen={modalIsOpen}
+        setIsOpen={setModalIsOpen}
+      />
       <div 
         style={{
           position: 'absolute',
@@ -52,7 +57,7 @@ const Question = ({ question, questionNumber }: Props) => {
         fontSize: window.innerWidth < 768 ? window.innerWidth < 425 ? 18 : 20 : 25,
         whiteSpace: 'pre-wrap',
       }}>
-        {question}
+        {questionInner}
       </div>
     </div>
   )

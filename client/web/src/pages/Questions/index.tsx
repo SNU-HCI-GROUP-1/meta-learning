@@ -71,7 +71,8 @@ const Questions = ({ answers, setAnswers }: Props) => {
           </StyledButton>
         </div>
         <Question
-          question={questions[questionNumber].question}
+          question={questions[questionNumber]}
+          questionInner={questions[questionNumber].question}
           questionNumber={questionNumber}
         />
         <div style={{
