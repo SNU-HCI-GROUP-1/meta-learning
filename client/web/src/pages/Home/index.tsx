@@ -22,7 +22,7 @@ const Home = () => {
   }
   return (
     <Container>
-      <Header innerText='META LEARNING' />
+      <Header innerText='META LEARNING' page={1} />
       <DragDrop></DragDrop>
       <div
         style={{

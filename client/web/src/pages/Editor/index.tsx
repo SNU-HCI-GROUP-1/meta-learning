@@ -34,7 +34,7 @@ const Editor = ({ setQuestions }: Props) => {
   }
   return (
     <>
-      <Header innerText='Edit Script' />
+      <Header innerText='Edit Script' page={2} />
       {
         isLoading ? (
           <Container>
