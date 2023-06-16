@@ -26,7 +26,7 @@ const ConfirmModal = ({ isOpen, setIsOpen, answers }: Props) => {
       className="modal-content"
       style={{
         content: {
-          width: 'max(40vw, 240px)',
+          width: window.innerWidth < 768 ? 250 : 300,
           height: 200,
           margin: 'auto',
           marginTop: '20vh',
@@ -44,6 +44,7 @@ const ConfirmModal = ({ isOpen, setIsOpen, answers }: Props) => {
         style={{
           marginTop: 10,
           height: 30,
+          fontSize: 20,
         }}
       >
         {isAllAnswered ? '' : <b>Warning</b>}

@@ -61,8 +61,9 @@ const ReportModal = ({ isOpen, setIsOpen }: Props) => {
           placeholder={'Enter Reason'}
           style={{
             border: '1px solid lightgray',
-            width: '90%',
+            width: '100%',
             margin: 'auto',
+            marginTop: 5,
           }}
         />
       </div>

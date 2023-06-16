@@ -11,9 +11,6 @@ type Props = {
 }
 
 const Checks = ({ answers }: Props) => {
-  answers = !answers?.length 
-    || answers.filter(a => a === 'O' || a === 'X').length !== 10
-      ? ['O','X','O','X','O','O','O','O','O','O'] : answers;
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const questions = testQuestions;
   const onQuestionClick = (questionNumber: number) => {
@@ -114,7 +111,7 @@ const Checks = ({ answers }: Props) => {
               {questions[selectedQuestion].question}
               <br /><br />
               <div>
-                <b>Your Answer: </b> {answers[selectedQuestion]}
+                <b>Your Answer: </b> {answers[selectedQuestion] || 'Not Answered'}
               </div>
               <div
                 style={{
@@ -136,8 +133,14 @@ const Checks = ({ answers }: Props) => {
           flexDirection: 'row',
           justifyContent: 'center',
           marginTop: 10,
+          gap: 10,
         }}
       >
+        <StyledButton
+          onClick={() => window.location.href = '/editor'}
+        >
+          Download Questions
+        </StyledButton>
         <StyledButton
           onClick={() => window.location.href = '/editor'}
         >
