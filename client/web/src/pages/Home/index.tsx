@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../logo.svg';
+
 import '../../App.css';
 import LoaderComponent from '../../Components/Loader';
 import UploadFileButton from '../../UploadFile/Button';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from '../../Components/Container';
 import { timeout } from '../../lib/time';
 import Header from '../../Components/Header';
+import DragDrop from '../DragAndDrop';
 
 const Home = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -22,25 +23,27 @@ const Home = () => {
   return (
     <Container>
       <Header innerText='META LEARNING' />
+      <DragDrop></DragDrop>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'right',
+          marginLeft: '20%',
+          marginRight: '20%',
+          marginTop: 10,
+          fontSize: window.innerWidth < 500 ? 8 : 16, fontWeight: 'bold'
+        }}>
+        복습하고 싶은 강의의 녹음 파일을 올려주세요
+      </div>
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          height: '80%',
+          height: '20%',
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
-        <img src={logo} className="App-logo" alt="logo" />
-        {
-          isLoading ? (
-            <LoaderComponent />
-          ) : (
-            <UploadFileButton
-              handleUpload={handleUpload}
-            />
-          )
-        }
       </div>
     </Container>
   );
