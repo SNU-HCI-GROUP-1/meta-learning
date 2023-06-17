@@ -4,6 +4,9 @@ import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
 import testQuestions from './testQuestions';
+import { hover } from '@testing-library/user-event/dist/hover';
+import icon from '../../alert.png';
+import "./Questions.css"
 
 type Props = {
   answers: any[];
@@ -13,22 +16,22 @@ type Props = {
 const QUESTION_COUNT = 10;
 
 const Questions = ({ answers, setAnswers }: Props) => {
+  // 현재 보고 있는 문항 번호
   const [questionNumber, setQuestionNumber] = React.useState(0);
+  // 풀은 문제들 나타내는 array
+  const [questionAnswered, setQuestionAnswered] = React.useState(Array(QUESTION_COUNT).fill(0));
   const questions = testQuestions;
   const navigate = useNavigate();
-  const AnswerButton = ({ 
-    answerType, questionNumber 
+  const AnswerButton = ({
+    answerType, questionNumber
   }: { answerType: string, questionNumber: number }) => {
     return (
-      <StyledButton
-        style={{
-          borderColor: 'midnightblue',
-          width: 'min(30vw, 300px)',
-          backgroundColor: answers[questionNumber] === answerType 
-            ? 'midnightblue' : 'white',
-          color: answers[questionNumber] === answerType
-            ? 'white' : 'black',
-        }}
+      <button
+        className={`
+          ox-button 
+          ${answerType == 'O' ? 'o-button' : 'x-button'} 
+          ${questionAnswered[questionNumber] ? questionAnswered[questionNumber] == answerType ? 'selected' : 'not-selected' : ''}
+          `}
         onClick={() => {
           if (answers[questionNumber] === answerType) {
             answers[questionNumber] = null;
@@ -36,12 +39,18 @@ const Questions = ({ answers, setAnswers }: Props) => {
             answers[questionNumber] = answerType;
           }
           setAnswers([...answers]);
+
+          let arr = [...questionAnswered];
+          arr[questionNumber] = answerType;
+          setQuestionAnswered(arr);
+          setQuestionNumber(!questionAnswered[questionNumber] && questionNumber < 9 ? questionNumber + 1 : questionNumber);
         }}
       >
         {answerType}
-      </StyledButton>
+      </button>
     )
   }
+
   const onSubmit = () => {
     if (answers.filter((a) => a === 'O' || a === 'X').length !== 5) {
       alert('Please answer all questions.');
@@ -53,10 +62,58 @@ const Questions = ({ answers, setAnswers }: Props) => {
       return;
     }
   }
+
   return (
     <Container>
       <Header innerText='Questions' page={3} />
-      <div style={{
+      <div className='text-body'>
+        <div style={{ position: 'absolute', top: 40, right: 40 }}>
+          <img src={icon} alt="icon" style={{ width: 44, height: 44, margin: 'auto' }}></img>
+          <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
+        </div>
+        <div
+          className='question-number'
+          style={{
+            fontFamily: "Noto Sans KR SemiBold",
+            fontSize: 44,
+
+          }}>
+          Q{questionNumber+1}
+        </div>
+        <div className='question-text noto-sans'>
+          {questions[questionNumber].question}
+        </div>
+        <div className='ox-wrapper' >
+          <AnswerButton answerType='O' questionNumber={questionNumber}></AnswerButton>
+          <AnswerButton answerType='X' questionNumber={questionNumber}></AnswerButton>
+        </div>
+      </div>
+      <div className="next-button-wrapper">
+        <div className="next-button">
+          <div className="question-item-wrapper">
+            {Array(10).fill(0).map((_, i) => (
+              <div
+                className={`question-item ${questionAnswered[i] ? 'question-answered' : ''}`}
+                onClick={() => setQuestionNumber(i)}
+              >
+                {i + 1}
+              </div>
+            ))}
+          </div>
+          <div className="subtext noto-sans-kr" style={{fontWeight: 'normal'}}>
+            문제 번호를 누르면 해당 문제로 이동할 수 있습니다
+          </div>
+        </div>
+        <button
+          className={`next-button noto-sans-kr button-activated`}
+          onClick={onSubmit}
+          style={{ width: "66.66%", marginLeft: 24 }}
+        >답안 제출</button>
+      </div>
+
+
+
+      {/* <div style={{
         width: '80%',
         alignContent: 'center',
         margin: 'auto',
@@ -165,7 +222,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
             {questionNumber === QUESTION_COUNT - 1 ? '' : 'Next >>'}
           </div>
         </div>
-      </div>
+      </div> */}
     </Container>
   );
 }
