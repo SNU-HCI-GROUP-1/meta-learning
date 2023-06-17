@@ -15,11 +15,11 @@ const UploadFileButton = ({ handleUpload }: Props) => {
 
   return (
     <div className="App">
-      <StyledButton
+      <button
         onClick={handleClick}
       >
-        파일 업로드
-      </StyledButton>
+        스크립트 생성
+      </button>
       <input type="file"
         accept='.mp3'
         ref={hiddenFileInput}
