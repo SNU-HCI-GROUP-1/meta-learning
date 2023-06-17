@@ -4,16 +4,16 @@ import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
 import Question from '../../Components/Question/Question';
-import testQuestions from '../Questions/testQuestions';
+import { Question as QuestionType } from '../../App';
 import './index.css';
 
 type Props = {
   answers: any[];
+  questions: QuestionType[];
 }
 
-const Checks = ({ answers }: Props) => {
+const Checks = ({ answers, questions }: Props) => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
-  const questions = testQuestions;
   const onQuestionClick = (questionNumber: number) => {
     setSelectedQuestion(questionNumber);
   }

@@ -3,12 +3,13 @@ import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
 import AnswerButton from './AnswerButton';
-import testQuestions from './testQuestions';
 import ConfirmModal from './ConfirmModal';
 import Question from '../../Components/Question/Question';
+import { Question as QuestionType } from '../../App';
 
 type Props = {
   answers: any[];
+  questions: QuestionType[]
   setAnswers: (answers: any[]) => void;
 }
 
@@ -20,12 +21,11 @@ const ANSWER_TYPE = {
 }
 const ANSWER_TYPE_LIST = [ANSWER_TYPE.O, ANSWER_TYPE.X];
 
-const Questions = ({ answers, setAnswers }: Props) => {
+const Questions = ({ answers, questions, setAnswers }: Props) => {
   const [questionNumber, setQuestionNumber] = React.useState(0);
   const [modalIsOpen, setModalIsOpen] = React.useState(false);
   const [isChecking, setIsChecking] = React.useState(false);
-
-  const questions = testQuestions;
+  
   const onSubmit = () => {
     setModalIsOpen(true);
   }

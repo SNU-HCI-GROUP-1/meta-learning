@@ -5,15 +5,30 @@ import { useNavigate } from 'react-router-dom';
 import Container from '../../Components/Container';
 import TextEditor from './TextEditor';
 import LoaderComponent from '../../Components/Loader';
-import { timeout } from '../../lib/time';
+import { Question } from '../../App';
 import Header from '../../Components/Header';
+import { sendReq } from '../../sendReq';
+import testQuestions from '../../testQuestions';
 
-const Editor = () => {
+type Props = {
+  setQuestions: (questions: Question[]) => void;
+}
+
+const Editor = ({ setQuestions }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const onSubmit = async () => {
+  const onSubmit = async (text: string) => {
     setIsLoading(true);
-    await timeout(3000);
+    let questions = [];
+    try {
+      questions = (await sendReq('POST', '/generate_questions', {
+        prompt: text
+      })).questions;
+    } catch (error) {
+      console.log(error);
+      questions = testQuestions;
+    }
+    setQuestions(questions);
     setIsLoading(false);
     navigate('/questions');
   }
@@ -34,7 +49,7 @@ const Editor = () => {
             </div>
           </Container>
         ) : (
-          <TextEditor 
+          <TextEditor
             onSubmit={onSubmit}
           />
         )

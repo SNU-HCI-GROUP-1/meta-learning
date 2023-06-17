@@ -1,14 +1,21 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-const configuration = new Configuration({
-  organization: process.env.OPEN_AI_ORGANIZATION,
-  apiKey: process.env.OPEN_AI_API_KEY,
-});
+let openAi: OpenAIApi | null = null;
 
-const openAi = new OpenAIApi(configuration);
+export const createOpenAiConnection = () => {
+  const configuration = new Configuration({
+    organization: process.env.OPEN_AI_ORGANIZATION,
+    apiKey: process.env.OPEN_AI_API_KEY,
+  });
+
+  openAi = new OpenAIApi(configuration);
+};
 
 export const runGPT35 = async (prompt: string) => {
-  const response = await openAi.createChatCompletion({
+  if (!openAi) {
+    createOpenAiConnection();
+  }
+  const response = await openAi!.createChatCompletion({
     model: 'gpt-3.5-turbo',
     messages: [{ role: 'user', content: prompt }],
   });
