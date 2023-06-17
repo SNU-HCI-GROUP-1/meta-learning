@@ -49,7 +49,7 @@ const Questions = ({ answers, questions, setAnswers }: Props) => {
         setIsOpen={setModalIsOpen}
         answers={answers}
       />
-      <Header innerText='Questions' />
+      <Header innerText='Questions' page={3}/>
       <div style={{
         width: '80%',
         alignContent: 'center',

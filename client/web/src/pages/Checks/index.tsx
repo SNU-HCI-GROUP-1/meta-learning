@@ -70,6 +70,7 @@ const Checks = ({ answers, questions }: Props) => {
     <Container>
       <Header
         innerText='Result'
+        page={4}
       />
       <div style={{
         width: '60%',
