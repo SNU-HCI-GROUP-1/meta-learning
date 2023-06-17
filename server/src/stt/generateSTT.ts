@@ -9,10 +9,10 @@ const client = new speech.SpeechClient(
   },
 );
 
-export const generateStt = async () => {
-  const filename = './test.mp3';
+export const generateStt = async (key?: string) => {
+  const fileName = key || '/test.mp3';
 
-  const file = fs.readFileSync(filename);
+  const file = fs.readFileSync(fileName);
   const audioBytes = file.toString('base64');
 
   const [response] = await client.recognize({
