@@ -67,12 +67,26 @@ interface IFileTypes {
 
 const Home = () => {
   const [isLoading, setIsLoading] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
   const navigate = useNavigate();
   const handleUpload = async (file?: any) => {
     console.log(file);
     // TODO: Upload file to server
-    navigate('/editor');
+    // navigate('/editor');
+    setIsLoading(true);
+    
+    setProgress(10);
   }
+
+  React.useEffect(() => {
+    if (isLoading && progress < 100) {
+      const timer = setTimeout(() => setProgress(progress + 1), 30);
+      return () => clearTimeout(timer);
+    }
+    if (progress >= 100) {
+      navigate('/editor');
+    }
+  }, [progress])
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [files, setFiles] = useState<IFileTypes[]>([]);
@@ -132,14 +146,14 @@ const Home = () => {
       e.stopPropagation();
 
       setIsDragging(false);
-      
+
       const file = e.dataTransfer?.files[0];
       if (file && file.type === 'audio/mpeg') {
-          onChangeFiles(e);
+        onChangeFiles(e);
       } else {
-          alert('Please drop an MP3 file.');
+        alert('Please drop an MP3 file.');
       }
-      
+
     },
     [onChangeFiles]
   );
@@ -171,8 +185,8 @@ const Home = () => {
   return (
     <Container>
       <Header innerText='Upload File' page={1} />
-      <div 
-        className={`DragDrop ${files.length == 0 ? 'before-upload' : 'after-upload'}`} style={{aspectRatio: 9 / 4}}>
+      <div
+        className={`DragDrop ${files.length == 0 ? 'before-upload' : 'after-upload'}`}>
         <input
           type="file"
           id="fileUpload"
@@ -188,43 +202,53 @@ const Home = () => {
         >
           {
             files.length == 0 ?
-            <div className="vertical-item">
+              <div className="vertical-item">
                 <div className="icon">
-                    <img src={icon} alt="icon" style={{width: "12%"}} />
-                    </div>
-                <div className="noto-sans-kr" style={{fontSize: window.innerWidth < 500 ? 10 : 20, fontWeight: 'bold', marginTop: 10}}>드래그해서 파일 선택(.mp3)</div>
-            </div>
-            :
-            <div className="vertical-item">
-              <div className="noto-sans-kr-bold" style={{fontSize: 24, marginBottom: 16, }}>파일 선택 완료!</div>
-              <div className="DragDrop-Files">
-          {files.length > 0 &&
-            files.map((file: IFileTypes) => {
-              const {
-                id,
-                object: { name }
-              } = file;
-
-              return (
-                <div key={id}>
-                  <div>📄 {name}</div>
+                  <img src={icon} alt="icon" style={{ width: "12%" }} />
                 </div>
-              );
-            })}
-        </div>
-            </div>
+                <div className="noto-sans-kr" style={{ fontSize: window.innerWidth < 500 ? 10 : 20, fontWeight: 'bold', marginTop: 10 }}>드래그해서 파일 선택(.mp3)</div>
+              </div>
+              :
+              <div className="vertical-item">
+                {
+                  !isLoading ?
+                  <div className="noto-sans-kr-bold" style={{ fontSize: 24, marginBottom: 16, }}>파일 선택 완료!</div>
+                  :
+                  <div>
+                    <div className="noto-sans-kr">스크립트를 생성중입니다...</div>
+                    <div className="loading-bar">
+                      <div className="current-bar" style={{width: progress + '%'}}></div>
+                    </div>
+                  </div>
+                }
+                <div className="DragDrop-Files">
+                  {files.length > 0 &&
+                    files.map((file: IFileTypes) => {
+                      const {
+                        id,
+                        object: { name }
+                      } = file;
+
+                      return (
+                        <div key={id}>
+                          <div>📄 {name}</div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
           }
         </label>
       </div>
       <div className="next-button-wrapper">
-        <button 
-        className={`next-button noto-sans-kr ${files.length != 0 ? 'button-activated' : 'button-disabled'}`}
-        onClick={handleUpload}
-        disabled={files.length == 0}
+        <button
+          className={`next-button noto-sans-kr ${files.length != 0 && !isLoading ? 'button-activated' : 'button-disabled'}`}
+          onClick={handleUpload}
+          disabled={files.length == 0 || isLoading}
         >스크립트 생성</button>
       </div>
       <div className="subtext noto-sans-kr">
-            다른 파일을 선택하고 싶나요? 새로운 파일을 드래그해주세요
+        다른 파일을 선택하고 싶나요? 새로운 파일을 드래그해주세요
       </div>
     </Container>
   );

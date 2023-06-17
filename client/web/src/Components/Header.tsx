@@ -43,13 +43,13 @@ const Header = ({ innerText, page }: Props) => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          width: 94,
+          width: 14*4 + 18*3,
         }}
       >
-        <div style={{width: 16, height: 16, borderRadius: '50%', backgroundColor: page == 1 ? '#63B899' : '#D3D3D3'}}></div>
-        <div style={{width: 16, height: 16, borderRadius: '50%', backgroundColor: page == 2 ? '#63B899' : '#D3D3D3'}}></div>
-        <div style={{width: 16, height: 16, borderRadius: '50%', backgroundColor: page == 3 ? '#63B899' : '#D3D3D3'}}></div>
-        <div style={{width: 16, height: 16, borderRadius: '50%', backgroundColor: page == 4 ? '#63B899' : '#D3D3D3'}}></div>
+        <div style={{width: 14, height: 14, borderRadius: '50%', backgroundColor: page == 1 ? '#63B899' : '#D3D3D3'}}></div>
+        <div style={{width: 14, height: 14, borderRadius: '50%', backgroundColor: page == 2 ? '#63B899' : '#D3D3D3'}}></div>
+        <div style={{width: 14, height: 14, borderRadius: '50%', backgroundColor: page == 3 ? '#63B899' : '#D3D3D3'}}></div>
+        <div style={{width: 14, height: 14, borderRadius: '50%', backgroundColor: page == 4 ? '#63B899' : '#D3D3D3'}}></div>
       </div>
     </div>
     <div
