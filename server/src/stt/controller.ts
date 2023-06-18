@@ -1,4 +1,9 @@
+import fs from 'fs';
+import path from 'path';
+
 import { Request, Response } from 'express';
+
+import { UPLOAD_FOLDER } from '../constants';
 
 import { generateStt } from './generateSTT';
 
@@ -13,9 +18,16 @@ export const uploadFile = async (req: Request, res: Response) => {
     });
   }
   const key = new Date().getTime() * Math.random();
-  uploadedFileMap[key] = req.file;
 
-  const { filename, size } = req.file;
+  const { originalname, filename, size } = req.file;
+  const fileExtension = path.extname(originalname);
+  const newFileName = filename + fileExtension;
+  fs.renameSync(`${UPLOAD_FOLDER}/${filename}`, `${UPLOAD_FOLDER}/${newFileName}`);
+
+  uploadedFileMap[key] = {
+    ...req.file,
+    filename: newFileName,
+  };
   return res.json({
     data: {
       message: 'File uploaded successfully',
@@ -29,6 +41,10 @@ export const uploadFile = async (req: Request, res: Response) => {
 export const generateSttFromFile = async (req: Request, res: Response) => {
   const { key } = req.query;
   const file = uploadedFileMap[key as string];
-  const prompt = await generateStt(file.path + file.filename);
-  res.json({ prompt });
+  const script = await generateStt(`${UPLOAD_FOLDER}/${file.filename}`);
+  res.json({
+    data: {
+      script,
+    },
+  });
 };

@@ -9,19 +9,21 @@ import { Question } from '../../App';
 import Header from '../../Components/Header';
 import { sendReq } from '../../sendReq';
 import testQuestions from '../../testQuestions';
-import defaultContents from './testDefault';
 import "./Editor.css"
 
 type Props = {
+  scripts: string;
+  setScripts: (scripts: string) => void;
   setQuestions: (questions: Question[]) => void;
 }
 
-const Editor = ({ setQuestions }: Props) => {
+const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const onSubmit = async (text: string) => {
     setIsLoading(true);
     let questions = [];
+    setScripts(text);
     try {
       questions = (await sendReq('POST', '/generate_questions', {
         prompt: text
@@ -36,7 +38,7 @@ const Editor = ({ setQuestions }: Props) => {
   }
 
   const QuillRef = useRef<ReactQuill>();
-  const [contents, setContents] = useState(defaultContents);
+  const [contents, setContents] = useState(scripts);
   const modules = useMemo(
     () => ({
       toolbar: false,

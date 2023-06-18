@@ -34,7 +34,7 @@ export const sendQuestions = async (req: Request, res: Response) => {
       questions.push({ question, answer: '' });
     } else if (line.startsWith('Answer:')) {
       const answer = (line.split('Answer: '))[1][0];
-      questions[questions.length - 1].answer = answer;
+      questions[questions.length - 1].answer = answer === 'O' || answer === 'Y' ? 'O' : 'X';
     }
   }
   console.log(questions);

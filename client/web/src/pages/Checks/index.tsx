@@ -6,6 +6,7 @@ import Header from '../../Components/Header';
 import Question from '../../Components/Question/Question';
 import { Question as QuestionType } from '../../App';
 import './index.css';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   answers: any[];
@@ -14,6 +15,7 @@ type Props = {
 
 const Checks = ({ answers, questions }: Props) => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
+  const navigate = useNavigate();
   const onQuestionClick = (questionNumber: number) => {
     setSelectedQuestion(questionNumber);
   }
@@ -153,7 +155,7 @@ const Checks = ({ answers, questions }: Props) => {
           Download Questions
         </StyledButton>
         <StyledButton
-          onClick={() => window.location.href = '/editor'}
+          onClick={() => navigate('/editor')}
         >
           Return to Script
         </StyledButton>
