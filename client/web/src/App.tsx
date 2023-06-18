@@ -49,6 +49,7 @@ function App() {
           <Checks
             answers={answers} 
             questions={questions}
+            text={scripts}
           />
         } 
         />

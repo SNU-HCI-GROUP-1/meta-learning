@@ -1,4 +1,5 @@
 import icon from '../cloud.png';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   innerText: string,
@@ -8,6 +9,7 @@ type Props = {
 const Header = ({ innerText, page }: Props) => {
   var header_width;
   if (window.innerWidth > 1920) header_width = 1920;
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -31,11 +33,13 @@ const Header = ({ innerText, page }: Props) => {
           color: 'black',
           fontFamily: 'Noto Sans ExtraBold',
           display: 'flex',
-          justifyContent: 'left'
+          justifyContent: 'left',
+          cursor: 'pointer',
         }}
+        onClick={()=>navigate('/')}
       >
         <img src={icon} alt="icon" style={{width: 36, height: 36, marginTop: 5}} />
-        <b>META LEARNING</b>
+        <b>META REVIEW</b>
       </div>
       <div
         className="process-indicator-box"

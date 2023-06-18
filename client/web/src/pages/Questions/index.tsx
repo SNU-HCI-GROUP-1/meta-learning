@@ -64,7 +64,9 @@ const Questions = ({ answers, setAnswers }: Props) => {
           let arr = [...questionAnswered];
           arr[questionNumber] = answerType;
           setQuestionAnswered(arr);
-          setQuestionNumber(!questionAnswered[questionNumber] && questionNumber < 9 ? questionNumber + 1 : questionNumber);
+
+          setTimeout(()=>setQuestionNumber(!questionAnswered[questionNumber] && questionNumber < 9 ? questionNumber + 1 : questionNumber), 100);
+          ;
         }}
       >
         {answerType}
