@@ -41,8 +41,6 @@ const Checks = ({ answers, questions, text }: Props) => {
 
     // answers = ['O', 'X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X'];
 
-    console.log(answers);
-
     const closeReportModal = () => {
         setIsReportModalOpen(false);
     }

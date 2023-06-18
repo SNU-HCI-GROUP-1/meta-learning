@@ -6,6 +6,7 @@
     margin-right: 16%;
     margin-top: 20px;
     aspect-ratio: 9 / 4;
+    position: relative;
   }
 
   .vertical-box {
@@ -67,6 +68,7 @@
   .ql-editor {
     overflow: auto;
     padding: 0 20px;
+    font-size: 18px;
   }
   .ql-editor::-webkit-scrollbar {
     width: 10px;
@@ -81,4 +83,7 @@
     background-color: #FFFFFF;
     border-radius: 10px;
     box-shadow: inset 0px 0px 5px white;
+  }
+  p {
+    line-height: 1.5;
   }
