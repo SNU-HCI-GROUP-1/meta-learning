@@ -1,166 +1,135 @@
-import { useState } from 'react';
-import { saveAs } from 'file-saver';
+import React from 'react';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
+import testQuestions from '../../testQuestions';
+import { hover } from '@testing-library/user-event/dist/hover';
+import icon from '../../alert.png';
+import icon2 from '../../document.png';
+import "./Checks.css"
+import Modal from '../../Components/Modal';
 import Question from '../../Components/Question/Question';
 import { Question as QuestionType } from '../../App';
-import './index.css';
+import { useNavigate } from 'react-router-dom';
+import ScriptModal from '../../Components/ScriptModal';
+
 
 type Props = {
-  answers: any[];
-  questions: QuestionType[];
+    answers: any[];
+    questions: QuestionType[];
+    text: string;
 }
 
-const Checks = ({ answers, questions }: Props) => {
-  const [selectedQuestion, setSelectedQuestion] = useState(0);
-  const onQuestionClick = (questionNumber: number) => {
-    setSelectedQuestion(questionNumber);
-  }
-  const handleDownload = () => {
-    const text = questions.map((q, idx) => (
-      `Q${idx + 1}. ${q.question}\nA: ${q.answer}\n\n`
-    )).join('');
-    const file = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    saveAs(file, 'questions.txt');
-  };
-  const isCorrect = (idx: number) => answers[idx] === questions[idx].answer;
+export const QUESTION_COUNT = 10;
 
-  const TableData = ({ idx }: { idx: number }) => (
-    <div 
-      style={{
-        textAlign: 'center',
-        cursor: 'pointer',
-        alignItems: 'center',
-        justifyContent: 'center',
-        border: selectedQuestion === idx ? '2px dashed midnightblue' : '2px solid white',
-        borderRadius: '10px',
-        minWidth: '40px',
-        width: window.innerWidth < 768 ? 60 : 100,
-        height: window.innerWidth < 768 ? 60 : 100,
-        position: 'relative',
-      }}
-      onClick={() => onQuestionClick(idx)}
-    >
-      {
-        <div style={{ 
-          textAlign: 'center',
-        }}>
-          <div style={{
-            position: 'absolute',
-            width: '100%',
-            color: selectedQuestion === idx ? 'black' : 'gray',
-          }}>
-            {idx + 1}
-          </div>
-          <div style={{
-            position: 'absolute',
-            width: '100%',
-            color: 'red',
-            opacity: '70%',
-          }}>
-            {isCorrect(idx) ? 'O' : 'X'}
-          </div>
-        </div>
-      }
-    </div>
-  )
+const Checks = ({ answers, questions, text }: Props) => {
+    // 현재 보고 있는 문항 번호
+    const [questionNumber, setQuestionNumber] = React.useState(0);
+    // 모달창 관리
+    const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+    const [isScriptModalOpen, setIsScriptModalOpen] = React.useState(false);
 
-  return (
-    <Container>
-      <Header
-        innerText='Result'
-        page={4}
-      />
-      <div style={{
-        width: '60%',
-        minWidth: '300px',
-        maxWidth: '700px',
-        margin: 'auto',
-        marginTop: window.innerWidth < 500 ? '2vh' : '5vh',
-        backgroundColor: 'white',
-        marginBottom: window.innerWidth < 500 ? '2vh' : '5vh',
-        fontSize: window.innerWidth < 768 ? 40 : 60,
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: window.innerWidth > 768 ? '2vw' : 0,
-        }}>
-          {
-            answers.slice(0, 5).map((a, idx) => (
-              <TableData idx={idx} />
-            ))
-          }
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: window.innerWidth > 768 ? '2vw' : 0,
-        }}>
-          {
-            answers.slice(5).map((a, idx) => (
-              <TableData idx={idx + 5} />
-            ))
-          }
-        </div>
-      </div>
-      <div style={{
-        margin: 'auto',
-        width: '80%',
-        minWidth: '300px',
-        backgroundColor: 'white',
-      }}>
-        <Question
-          question={questions[selectedQuestion]}
-          questionInner={
-            <div>
-              {questions[selectedQuestion].question}
-              <br /><br />
-              <div>
-                <b>Your Answer: </b> {answers[selectedQuestion] || 'Not Answered'}
-              </div>
-              <div
-                style={{
-                  color: isCorrect(selectedQuestion) ? 'green' : 'red',
-                }}
-              >
-                <b>Correct Answer: </b> {questions[selectedQuestion].answer}
-              </div>
+    const isCorrect = (idx: number) => answers[idx] === questions[idx].answer;
+
+    var fileName = "questions.txt";
+      var fileContent = '';
+      questions.map((q)=>{
+        fileContent = fileContent + 'Question: ' + q.question + '\nAnswer: ' + q.answer + '\n\n';
+      })
+      var myFile = new Blob([fileContent], {type: 'text/plain'});
+    const link = window.URL.createObjectURL(myFile)
+
+    // answers = ['O', 'X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X'];
+
+    console.log(answers);
+
+    const closeReportModal = () => {
+        setIsReportModalOpen(false);
+    }
+
+    const navigate = useNavigate();
+
+    return (
+        <Container>
+            {isReportModalOpen &&
+                <Modal
+                    setModalOpen={setIsReportModalOpen}
+                    submitButtonHandler={closeReportModal}
+                    title="문제 신고"
+                    subtitle="이 문항을 신고하시겠습니까?"
+                    cancel="취소"
+                    submit="신고"
+                    theme={false}
+                />}
+            {isScriptModalOpen &&
+                <ScriptModal
+                    setModalOpen={setIsScriptModalOpen}
+                    contents={text}
+                    setContents={ ()=>(null) }
+                ></ScriptModal>
+            }
+
+            <Header innerText='Checks' page={4} />
+            <div className='checks-body' style={{ border: isCorrect(questionNumber) ? '1px solid #63B899' : '1px solid #E38181'}}>
+                <div style={{ position: 'absolute', top: 40, right: 40, cursor: 'pointer' }} onClick={() => setIsReportModalOpen(true)}>
+                    <img src={icon} alt="icon" style={{ width: 44, height: 44, margin: 'auto' }}></img>
+                    <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
+                </div>
+                <div style={{ position: 'absolute', top: 40, right: 120, cursor: 'pointer' }} onClick={() => setIsScriptModalOpen(true)}>
+                    <img src={icon2} alt="icon2" style={{ width: 36, height: 36, margin: 'auto', marginTop: 8, }}></img>
+                    <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>스크립트 확인</div>
+                </div>
+                <div
+                    className='question-number'
+                    style={{
+                        fontFamily: "Noto Sans KR SemiBold",
+                        fontSize: 44,
+
+                    }}>
+                    Q{questionNumber + 1}
+                </div>
+                <div className='question-text noto-sans' style={{ padding: window.innerWidth < 500 ? '' : '40px 40px' }}>
+                    {questions[questionNumber].question}
+                </div>
+                <div className='answer-wrapper'>
+                    { !isCorrect(questionNumber) &&
+                    <div className='noto-sans' style={{fontSize: 24, textAlign: 'center', marginBottom: 16 }}>
+                      Answer: {questions[questionNumber].answer}
+                    </div>
+                    }
+                    
+                    <div className={`
+                        answer-button
+                        ${isCorrect(questionNumber) ? 'o-button' : 'x-button'} 
+                        `}>{answers[questionNumber]}</div>
+                </div>
             </div>
-          }
-          questionNumber={selectedQuestion}
-        />
-      </div>
-      <div
-        style={{
-          margin: 'auto',
-          width: '80%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 10,
-          gap: 10,
-        }}
-      >
-        <StyledButton
-          onClick={() => handleDownload()}
-        >
-          Download Questions
-        </StyledButton>
-        <StyledButton
-          onClick={() => window.location.href = '/editor'}
-        >
-          Return to Script
-        </StyledButton>
-      </div>
-    </Container>
-  )
-
+            <div className="next-button-wrapper">
+                <div className="next-button">
+                    <div className="checks-item-wrapper">
+                        {Array(10).fill(0).map((_, i) => (
+                            <div
+                                className={`checks-item ${isCorrect(i) ? 'correct-answer' : 'wrong-answer'} ${i == questionNumber ? 'current-answer' : ''}`}
+                                onClick={() => setQuestionNumber(i)}
+                            >
+                                {i + 1}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="subtext noto-sans-kr" style={{ fontWeight: 'normal' }}>
+                        문제 번호를 누르면 해당 문제로 이동할 수 있습니다
+                    </div>
+                </div>
+                <button
+                    className={`next-button noto-sans-kr button-activated`}
+                    style={{ width: "66.66%", marginLeft: 24 }}
+                    onClick={()=>document.getElementById('download')?.click()}>
+                    문제 전체 다운로드
+                </button>
+                <a id='download' href={link} download={fileName}></a>
+            </div>
+        </Container>
+    );
 }
 
 export default Checks;

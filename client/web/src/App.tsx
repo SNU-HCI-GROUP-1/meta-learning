@@ -18,13 +18,14 @@ export type Question = {
 function App() {
   const [answers, setAnswers] = React.useState<any[]>(Array(10).fill(null));
   const [questions, setQuestions] = React.useState<Question[]>(testQuestions);
+  const [text, setText] = React.useState<string>("");
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='editor' element={
           <Editor 
-            setQuestions={setQuestions}
+            setQuestions={setQuestions} setText={setText}
           />
         } 
         />
@@ -40,6 +41,7 @@ function App() {
           <Checks
             answers={answers} 
             questions={questions}
+            text={text}
           />
         } 
         />

@@ -35,7 +35,7 @@ const Header = ({ innerText, page }: Props) => {
         }}
       >
         <img src={icon} alt="icon" style={{width: 36, height: 36, marginTop: 5}} />
-        <b>META LEARNING</b>
+        <b>META REVIEW</b>
       </div>
       <div
         className="process-indicator-box"

@@ -14,9 +14,10 @@ import "./Editor.css"
 
 type Props = {
   setQuestions: (questions: Question[]) => void;
+  setText: (text: string) => void;
 }
 
-const Editor = ({ setQuestions }: Props) => {
+const Editor = ({ setQuestions, setText }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const onSubmit = async (text: string) => {
@@ -31,6 +32,7 @@ const Editor = ({ setQuestions }: Props) => {
       questions = testQuestions;
     }
     setQuestions(questions);
+    setText(text);
     setIsLoading(false);
     navigate('/questions');
   }
