@@ -6,12 +6,12 @@ import defaultContents from './testDefault';
 import Container from '../../Components/Container';
 
 type Props = {
-  onSubmit: () => void;
+  onSubmit: (text: string) => void;
 }
 
 const TextEditor = ({ onSubmit }: Props) => {
-  const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState(defaultContents);
+  let ref = useRef<ReactQuill>();
   const modules = useMemo(
     () => ({
       toolbar: false,
@@ -37,8 +37,8 @@ const TextEditor = ({ onSubmit }: Props) => {
         }}>        
           <ReactQuill
             ref={(element) => {
-              if (element !== null) {
-                QuillRef.current = element;
+              if (element !== null && ref !== undefined) {
+                ref.current = element;
               }
             }}
             value={contents}
@@ -57,7 +57,7 @@ const TextEditor = ({ onSubmit }: Props) => {
           float: 'right',
         }}>
           <StyledButton
-            onClick={onSubmit}
+            onClick={() => onSubmit(ref.current?.getEditor().getText()!)}
           >
             문제 생성
           </StyledButton>

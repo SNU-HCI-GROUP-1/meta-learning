@@ -1,9 +1,17 @@
 // server with express using 3000
-import express from 'express';
-import { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
 
-export default (route: any, options?: any) => {
+export default (route: any) => {
   const app = express();
+  app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
   app.use(route);
   app.get('/', (req: Request, res: Response) => {
     res.json({
@@ -11,4 +19,4 @@ export default (route: any, options?: any) => {
     });
   });
   return app;
-}
+};

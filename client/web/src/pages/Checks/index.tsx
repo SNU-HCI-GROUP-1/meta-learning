@@ -1,109 +1,140 @@
 import { useState } from 'react';
+import { saveAs } from 'file-saver';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
-import testQuestions from '../Questions/testQuestions';
 import Header from '../../Components/Header';
+import Question from '../../Components/Question/Question';
+import { Question as QuestionType } from '../../App';
+import './index.css';
 
 type Props = {
   answers: any[];
+  questions: QuestionType[];
 }
 
-const Checks = ({ answers }: Props) => {
-  answers = !answers?.length 
-    || answers.filter(a => a === 'O' || a === 'X').length !== 10
-      ? ['O','X','O','X','O','O','O','O','O','O'] : answers;
+const Checks = ({ answers, questions }: Props) => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
-  const questions = testQuestions;
   const onQuestionClick = (questionNumber: number) => {
     setSelectedQuestion(questionNumber);
   }
+  const handleDownload = () => {
+    const text = questions.map((q, idx) => (
+      `Q${idx + 1}. ${q.question}\nA: ${q.answer}\n\n`
+    )).join('');
+    const file = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    saveAs(file, 'questions.txt');
+  };
+  const isCorrect = (idx: number) => answers[idx] === questions[idx].answer;
+
+  const TableData = ({ idx }: { idx: number }) => (
+    <div 
+      style={{
+        textAlign: 'center',
+        cursor: 'pointer',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: selectedQuestion === idx ? '2px dashed midnightblue' : '2px solid white',
+        borderRadius: '10px',
+        minWidth: '40px',
+        width: window.innerWidth < 768 ? 60 : 100,
+        height: window.innerWidth < 768 ? 60 : 100,
+        position: 'relative',
+      }}
+      onClick={() => onQuestionClick(idx)}
+    >
+      {
+        <div style={{ 
+          textAlign: 'center',
+        }}>
+          <div style={{
+            position: 'absolute',
+            width: '100%',
+            color: selectedQuestion === idx ? 'black' : 'gray',
+          }}>
+            {idx + 1}
+          </div>
+          <div style={{
+            position: 'absolute',
+            width: '100%',
+            color: 'red',
+            opacity: '70%',
+          }}>
+            {isCorrect(idx) ? 'O' : 'X'}
+          </div>
+        </div>
+      }
+    </div>
+  )
 
   return (
     <Container>
-      <Header innerText='Edit Script' page={4} />
-      <h1 style={{
-        color: 'white',
-        paddingTop: '3vh',
-        marginBottom: '2vh',
-        textAlign: 'center',
-      }}>
-        Results
-      </h1>
-      <table style={{
-        width: '80%',
+      <Header
+        innerText='Result'
+        page={4}
+      />
+      <div style={{
+        width: '60%',
         minWidth: '300px',
+        maxWidth: '700px',
         margin: 'auto',
+        marginTop: window.innerWidth < 500 ? '2vh' : '5vh',
         backgroundColor: 'white',
-        border: '1px solid lightgray',
-        marginBottom: '5vh',
+        marginBottom: window.innerWidth < 500 ? '2vh' : '5vh',
+        fontSize: window.innerWidth < 768 ? 40 : 60,
       }}>
-        <thead style={{
-          border: '1px solid lightgray',
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: window.innerWidth > 768 ? '2vw' : 0,
         }}>
-          <tr>
-            <th style={{width: '25%'}}>Question</th>
-            {
-              Array(5).fill(0).map((q, idx) => {
-                return (
-                  <th
-                    onClick={() => onQuestionClick(idx)}
-                  >{idx + 1}</th>
-                )
-              })
-            }
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{textAlign: 'center'}}>Your Answer</td>
-            {
-              answers.map((a, idx) => {
-                return (
-                  <td 
-                    style={{
-                      textAlign: 'center',
-                    }}
-                    onClick={() => onQuestionClick(idx)}
-                  >{a}</td>
-                )
-              })
-            }
-          </tr>
-        </tbody>
-      </table>
+          {
+            answers.slice(0, 5).map((a, idx) => (
+              <TableData idx={idx} />
+            ))
+          }
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: window.innerWidth > 768 ? '2vw' : 0,
+        }}>
+          {
+            answers.slice(5).map((a, idx) => (
+              <TableData idx={idx + 5} />
+            ))
+          }
+        </div>
+      </div>
       <div style={{
         margin: 'auto',
         width: '80%',
         minWidth: '300px',
         backgroundColor: 'white',
-        height: '30vh',
       }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          marginRight: '2vh',
-          marginLeft: '2vh',
-          gap: '1vh',
-          height: '30vh',
-          textOverflow: 'scroll',
-        }}>
-          <h1 style={{
-            textAlign: 'center',
-            marginBottom: '1vh',
-          }}>
-            <b>Question {selectedQuestion + 1}</b>
-          </h1>
-          <h1 style={{
-            overflow: 'scroll',
-          }}>
-            {questions[selectedQuestion].question}
-            <br />
-            <br />
-            Answer: {questions[selectedQuestion].answer}
-            <br />
-            Yours: {answers[selectedQuestion]}
-          </h1>
-        </div>
+        <Question
+          question={questions[selectedQuestion]}
+          questionInner={
+            <div>
+              {questions[selectedQuestion].question}
+              <br /><br />
+              <div>
+                <b>Your Answer: </b> {answers[selectedQuestion] || 'Not Answered'}
+              </div>
+              <div
+                style={{
+                  color: isCorrect(selectedQuestion) ? 'green' : 'red',
+                }}
+              >
+                <b>Correct Answer: </b> {questions[selectedQuestion].answer}
+              </div>
+            </div>
+          }
+          questionNumber={selectedQuestion}
+        />
       </div>
       <div
         style={{
@@ -112,9 +143,15 @@ const Checks = ({ answers }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
-          marginTop: '2vh',
+          marginTop: 10,
+          gap: 10,
         }}
       >
+        <StyledButton
+          onClick={() => handleDownload()}
+        >
+          Download Questions
+        </StyledButton>
         <StyledButton
           onClick={() => window.location.href = '/editor'}
         >

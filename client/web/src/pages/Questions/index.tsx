@@ -1,20 +1,32 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
-import testQuestions from './testQuestions';
+import testQuestions from '../../testQuestions';
 import { hover } from '@testing-library/user-event/dist/hover';
 import icon from '../../alert.png';
 import "./Questions.css"
 import Modal from '../../Components/Modal';
+import AnswerButton from './AnswerButton';
+import ConfirmModal from './ConfirmModal';
+import Question from '../../Components/Question/Question';
+import { Question as QuestionType } from '../../App';
+import { useNavigate } from 'react-router-dom';
+
 
 type Props = {
   answers: any[];
+  questions: QuestionType[]
   setAnswers: (answers: any[]) => void;
 }
 
-const QUESTION_COUNT = 10;
+export const QUESTION_COUNT = 10;
+const ANSWER_TYPE = {
+  O: 'O',
+  X: 'X',
+  EMPTY: null,
+}
+const ANSWER_TYPE_LIST = [ANSWER_TYPE.O, ANSWER_TYPE.X];
 
 const Questions = ({ answers, setAnswers }: Props) => {
   // 현재 보고 있는 문항 번호
@@ -160,44 +172,32 @@ const Questions = ({ answers, setAnswers }: Props) => {
             Confirm
           </StyledButton>
         </div>
+        <Question
+          question={questions[questionNumber]}
+          questionInner={questions[questionNumber].question}
+          questionNumber={questionNumber}
+        />
         <div style={{
-          marginTop: '1vh',
-          border: '1px solid lightgray',
-          backgroundColor: 'white',
-          height: window.innerWidth < 500 ? '35vh' : '50vh',
-          borderRadius: '10px',
-          borderColor: 'midnightblue',
-          overflow: 'scroll',
-        }}>
-          <div style={{
-            margin: '3vh',
-            marginTop: '5vh',
-            fontSize: 'min(5vw, 50px, 8vh)',
-          }}>
-            <b>Q{questionNumber + 1}.</b>
-          </div>
-          <div style={{
-            margin: '3vh',
-            fontSize: 'min(4vw, 30px, 5vh)',
-          }}>
-            {questions[questionNumber].question}
-          </div>
-        </div>
-        <div style={{
-          marginTop: '4vh',
+          marginTop: window.innerWidth < 500 ? 20 : 40,
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
           gap: '5vw',
         }}>
-          <AnswerButton
-            answerType='O'
-            questionNumber={questionNumber}
-          />
-          <AnswerButton
-            answerType='X'
-            questionNumber={questionNumber}
-          />
+          {
+            ANSWER_TYPE_LIST.map((answerType) => (
+              <AnswerButton
+                answers={answers}
+                answerType={answerType}
+                questionNumber={questionNumber}
+                isChecking={isChecking}
+                isNextQuestionAnswered={isNextQuestionAnswered(questionNumber)}
+                setQuestionNumber={setQuestionNumber}
+                setAnswers={setAnswers}
+                setIsChecking={setIsChecking}
+                openModalOnAnswer={openModalOnAnswer}
+              />))
+          }
         </div>
         <div style={{
           minWidth: '240px',
@@ -205,49 +205,24 @@ const Questions = ({ answers, setAnswers }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
-          gap: window.innerWidth < 500 ? 5 : 15,
-          marginTop: '5vh',
+          gap: window.innerWidth < 500 ? 10 : 15,
+          marginTop: window.innerWidth < 500 ? 20 : 40,
         }}>
-          <div
-            style={{
-              cursor: questionNumber === 0 ? '' : 'pointer',
-              userSelect: 'none',
-              marginRight: '2vw',
-              minWidth: '60px',
-            }}
-            onClick={() => setQuestionNumber(questionNumber - 1 < 0 ? 0 : questionNumber - 1)}
-          >
-            {questionNumber === 0 ? '' : '<< Prev'}
-          </div>
           {Array(10).fill(0).map((_, i) => (
             <div
               style={{
                 marginTop: '0.5vh',
                 borderRadius: '50%',
                 borderColor: 'midnightblue',
-                backgroundColor: i === questionNumber ? 'midnightblue' : 'lightgray',
-                width: 'min(3vw, 20px)',
-                height: 'min(3vw, 20px)',
+                backgroundColor: i === questionNumber ? 'midnightblue' : getCircleColor(i),
+                width: 'min(4vw, 20px)',
+                height: 'min(4vw, 20px)',
                 cursor: 'pointer',
               }}
               onClick={() => setQuestionNumber(i)}
             >
             </div>
           ))}
-          <div
-            style={{
-              cursor: questionNumber === QUESTION_COUNT - 1 ? '' : 'pointer',
-              userSelect: 'none',
-              marginLeft: '2vw',
-              minWidth: '60px',
-              textAlign: 'right',
-            }}
-            onClick={() => setQuestionNumber(
-              questionNumber + 1 > QUESTION_COUNT - 1 ? QUESTION_COUNT - 1 : questionNumber + 1,
-            )}
-          >
-            {questionNumber === QUESTION_COUNT - 1 ? '' : 'Next >>'}
-          </div>
         </div>
       </div> */}
     </Container>

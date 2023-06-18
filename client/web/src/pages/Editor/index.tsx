@@ -5,19 +5,32 @@ import "react-quill/dist/quill.snow.css";
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../Components/Container';
-import TextEditor from './TextEditor';
-import LoaderComponent from '../../Components/Loader';
-import { timeout } from '../../lib/time';
+import { Question } from '../../App';
 import Header from '../../Components/Header';
+import { sendReq } from '../../sendReq';
+import testQuestions from '../../testQuestions';
 import defaultContents from './testDefault';
 import "./Editor.css"
 
-const Editor = () => {
+type Props = {
+  setQuestions: (questions: Question[]) => void;
+}
+
+const Editor = ({ setQuestions }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const onSubmit = async () => {
+  const onSubmit = async (text: string) => {
     setIsLoading(true);
-    await timeout(3000);
+    let questions = [];
+    try {
+      questions = (await sendReq('POST', '/generate_questions', {
+        prompt: text
+      })).questions;
+    } catch (error) {
+      console.log(error);
+      questions = testQuestions;
+    }
+    setQuestions(questions);
     setIsLoading(false);
     navigate('/questions');
   }
@@ -39,7 +52,7 @@ const Editor = () => {
         isLoading ? (
           <></>
         ) : (
-          <TextEditor 
+          <TextEditor
             onSubmit={onSubmit}
           />
         )
@@ -74,7 +87,7 @@ const Editor = () => {
           >이전</button>
         <button
           className={`next-button noto-sans-kr button-activated`}
-          onClick={onSubmit}
+          onClick={() => onSubmit(QuillRef.current?.getEditor().getText()!)}
         >문제 생성</button>
       </div>
     </Container>
