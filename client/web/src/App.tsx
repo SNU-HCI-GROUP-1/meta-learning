@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Checks from './pages/Checks';
 import Editor from './pages/Editor';
+import defaultContents from './pages/Editor/testDefault';
 import Home from './pages/Home';
 import Questions from './pages/Questions';
 import testQuestions from './testQuestions';
@@ -18,14 +19,21 @@ export type Question = {
 function App() {
   const [answers, setAnswers] = React.useState<any[]>(Array(10).fill(null));
   const [questions, setQuestions] = React.useState<Question[]>(testQuestions);
-  const [text, setText] = React.useState<string>("");
+  const [scripts, setScripts] = React.useState<string>(defaultContents);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={
+        <Home
+          setScripts={setScripts}
+        />
+        } 
+        />
         <Route path='editor' element={
-          <Editor 
-            setQuestions={setQuestions} setText={setText}
+          <Editor
+            scripts={scripts}
+            setScripts={setScripts}
+            setQuestions={setQuestions}
           />
         } 
         />
@@ -41,7 +49,7 @@ function App() {
           <Checks
             answers={answers} 
             questions={questions}
-            text={text}
+            text={scripts}
           />
         } 
         />

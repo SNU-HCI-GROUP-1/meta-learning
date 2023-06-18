@@ -7,8 +7,6 @@ import React, {
 } from "react";
 
 import '../../App.css';
-import LoaderComponent from '../../Components/Loader';
-import UploadFileButton from '../../UploadFile/Button';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../Components/Container';
 import { timeout } from '../../lib/time';
@@ -16,6 +14,8 @@ import Header from '../../Components/Header';
 
 import "./DragDrop.css";
 import icon from '../../drag-and-drop.png';
+import { uploadFile } from './sendUploadFile';
+import { sendReq } from '../../sendReq';
 
 // const Home = () => {
 //   const [isLoading, setIsLoading] = React.useState(false);
@@ -63,30 +63,59 @@ import icon from '../../drag-and-drop.png';
 interface IFileTypes {
   id: number;
   object: File;
-}
+};
 
-const Home = () => {
+type Props = {
+  setScripts: (scripts: string) => void;
+};
+
+const Home = ({ setScripts }: Props) => {
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isFileUploading, setIsFileUploading] = React.useState(false);
+  const [isSTTLoading, setIsSTTLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const navigate = useNavigate();
-  const handleUpload = async (file?: any) => {
-    console.log(file);
-    // TODO: Upload file to server
-    // navigate('/editor');
+  const handleUpload = async () => {
     setIsLoading(true);
-    
-    setProgress(10);
+    setIsSTTLoading(true);
+    setIsFileUploading(true);
+    setProgress(5);
+    let key = '';
+    try {
+      key = (await uploadFile(files[0].object)).key;
+    } catch (err) {
+      console.log(err);
+    }
+    await timeout(3000);
+    setProgress(20);
+    setIsFileUploading(false);
+    if (key && key !== '') {
+      try {
+        const script = (await sendReq('GET', `/generate_stt?key=${key}`)).script;
+        setScripts(script);
+      } catch (err) {
+        console.log(err);
+        await timeout(10000);
+      }
+    }
+    setIsSTTLoading(false);
   }
 
   React.useEffect(() => {
-    if (isLoading && progress < 100) {
-      const timer = setTimeout(() => setProgress(progress + 1), 30);
+    if (isLoading && isSTTLoading && progress < 90) {
+      const timer = setTimeout(() => setProgress(progress + 1), 1000);
+      return () => clearTimeout(timer);
+    }
+    if (isLoading && !isSTTLoading && progress < 100) {
+      const timer = setTimeout(() => setProgress(progress + 2), 30);
       return () => clearTimeout(timer);
     }
     if (progress >= 100) {
+      setIsLoading(false);
       navigate('/editor');
+      setProgress(0);
     }
-  }, [progress])
+  }, [progress, isSTTLoading]);
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [files, setFiles] = useState<IFileTypes[]>([]);
@@ -186,7 +215,7 @@ const Home = () => {
     <Container>
       <Header innerText='Upload File' page={1} />
       <div
-        className={`DragDrop ${files.length == 0 ? 'before-upload' : 'after-upload'}`}>
+        className={`DragDrop ${files.length === 0 ? 'before-upload' : 'after-upload'}`}>
         <input
           type="file"
           id="fileUpload"
@@ -201,7 +230,7 @@ const Home = () => {
           ref={dragRef}
         >
           {
-            files.length == 0 ?
+            files.length === 0 ?
               <div className="vertical-item">
                 <div className="icon">
                   <img src={icon} alt="icon" style={{ width: "12%" }} />
@@ -215,7 +244,11 @@ const Home = () => {
                   <div className="noto-sans-kr-bold" style={{ fontSize: 24, marginBottom: 16, }}>파일 선택 완료!</div>
                   :
                   <div>
-                    <div className="noto-sans-kr">스크립트를 생성중입니다...</div>
+                    <div className="noto-sans-kr">
+                      {
+                        isFileUploading ? '파일을 업로드 중입니다...' : '스크립트를 생성중입니다...'
+                      }
+                    </div>
                     <div className="loading-bar">
                       <div className="current-bar" style={{width: progress + '%'}}></div>
                     </div>
@@ -242,9 +275,9 @@ const Home = () => {
       </div>
       <div className="next-button-wrapper">
         <button
-          className={`next-button noto-sans-kr ${files.length != 0 && !isLoading ? 'button-activated' : 'button-disabled'}`}
+          className={`next-button noto-sans-kr ${files.length !== 0 && !isLoading ? 'button-activated' : 'button-disabled'}`}
           onClick={handleUpload}
-          disabled={files.length == 0 || isLoading}
+          disabled={files.length === 0 || isLoading}
         >스크립트 생성</button>
       </div>
       <div className="subtext noto-sans-kr">

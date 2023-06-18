@@ -9,15 +9,15 @@ import { Question } from '../../App';
 import Header from '../../Components/Header';
 import { sendReq } from '../../sendReq';
 import testQuestions from '../../testQuestions';
-import defaultContents from './testDefault';
 import "./Editor.css"
 
 type Props = {
+  scripts: string;
+  setScripts: (scripts: string) => void;
   setQuestions: (questions: Question[]) => void;
-  setText: (text: string) => void;
 }
 
-const Editor = ({ setQuestions, setText }: Props) => {
+const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -28,12 +28,13 @@ const Editor = ({ setQuestions, setText }: Props) => {
     setIsLoading(true);
     
     let questions = [];
+
     try {
       questions = (await sendReq('POST', '/generate_questions', {
         prompt: text
       })).questions;
       setQuestions(questions);
-      setText(text);
+      setScripts(text);
       // setIsLoading(false);
       setProgress(100);
       setTimeout(()=> navigate('/questions'), 100);
@@ -44,12 +45,12 @@ const Editor = ({ setQuestions, setText }: Props) => {
       setProgress(20);
       questions = testQuestions;
       setQuestions(questions);
-      setText(text);
+      setScripts(text);
     }
   }
 
   const QuillRef = useRef<ReactQuill>();
-  const [contents, setContents] = useState(defaultContents);
+  const [contents, setContents] = useState(scripts);
   const modules = useMemo(
     () => ({
       toolbar: false,
