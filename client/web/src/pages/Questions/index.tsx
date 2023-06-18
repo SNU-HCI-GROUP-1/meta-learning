@@ -7,6 +7,7 @@ import testQuestions from './testQuestions';
 import { hover } from '@testing-library/user-event/dist/hover';
 import icon from '../../alert.png';
 import "./Questions.css"
+import Modal from '../../Components/Modal';
 
 type Props = {
   answers: any[];
@@ -20,6 +21,14 @@ const Questions = ({ answers, setAnswers }: Props) => {
   const [questionNumber, setQuestionNumber] = React.useState(0);
   // 풀은 문제들 나타내는 array
   const [questionAnswered, setQuestionAnswered] = React.useState(Array(QUESTION_COUNT).fill(0));
+  // 모달창 관리
+  const [isNotDoneModalOpen, setIsNotDoneModalOpen] = React.useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+
+  const closeReportModal = () => {
+    setIsReportModalOpen(false);
+  }
+
   const questions = testQuestions;
   const navigate = useNavigate();
   const AnswerButton = ({
@@ -52,22 +61,39 @@ const Questions = ({ answers, setAnswers }: Props) => {
   }
 
   const onSubmit = () => {
-    if (answers.filter((a) => a === 'O' || a === 'X').length !== 5) {
-      alert('Please answer all questions.');
+    if (questionAnswered.filter((a) => a === 'O' || a === 'X').length < 10) {
+      setIsNotDoneModalOpen(true);
       return;
     }
-    if (window.confirm('Submit?') === true) {
       navigate('/checks');
-    } else {
-      return;
-    }
   }
 
   return (
     <Container>
+       {isNotDoneModalOpen && 
+       <Modal 
+       setModalOpen={setIsNotDoneModalOpen} 
+       submitButtonHandler={()=>(null)} 
+       title="답안 제출" 
+       subtitle="아직 풀지 않은 문제가 있습니다. 그래도 제출하시겠습니까?" 
+       cancel="취소" 
+       submit="제출"
+       theme={true}
+       />}
+       {isReportModalOpen && 
+       <Modal 
+       setModalOpen={setIsReportModalOpen} 
+       submitButtonHandler={closeReportModal} 
+       title="문제 신고" 
+       subtitle="이 문항을 신고하시겠습니까?" 
+       cancel="취소" 
+       submit="신고" 
+       theme={false}
+       />}
+
       <Header innerText='Questions' page={3} />
       <div className='text-body'>
-        <div style={{ position: 'absolute', top: 40, right: 40 }}>
+        <div style={{ position: 'absolute', top: 40, right: 40, cursor: 'pointer' }} onClick={() => setIsReportModalOpen(true)}>
           <img src={icon} alt="icon" style={{ width: 44, height: 44, margin: 'auto' }}></img>
           <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
         </div>
@@ -80,10 +106,10 @@ const Questions = ({ answers, setAnswers }: Props) => {
           }}>
           Q{questionNumber+1}
         </div>
-        <div className='question-text noto-sans'>
+        <div className='question-text noto-sans' style={{padding: window.innerWidth < 500 ? '' : '40px 40px'}}>
           {questions[questionNumber].question}
         </div>
-        <div className='ox-wrapper' >
+        <div className='ox-wrapper'>
           <AnswerButton answerType='O' questionNumber={questionNumber}></AnswerButton>
           <AnswerButton answerType='X' questionNumber={questionNumber}></AnswerButton>
         </div>
@@ -107,8 +133,9 @@ const Questions = ({ answers, setAnswers }: Props) => {
         <button
           className={`next-button noto-sans-kr button-activated`}
           onClick={onSubmit}
-          style={{ width: "66.66%", marginLeft: 24 }}
-        >답안 제출</button>
+          style={{ width: "66.66%", marginLeft: 24 }}>
+          답안 제출
+        </button>
       </div>
 
 
