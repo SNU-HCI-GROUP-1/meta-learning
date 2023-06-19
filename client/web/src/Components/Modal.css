@@ -1,9 +1,6 @@
 /* 모달창을 화면 중앙. 최상단에 노출 */
 .modal-container {
     /* 모달창 크기 */
-    width: 560px;
-    height: 256px;
-
     z-index: 999;
 
     position: absolute;
@@ -17,16 +14,37 @@
     overflow: hidden;
 }
 
-.modal-title {
+.modal-container.small {
+    width: 280px;
+    height: 140px;
+}
+.modal-container.large {
+    width: 560px;
+    height: 256px;
+}
+
+.modal-title.large {
     font-size: 24px;
     padding-left: 32px;
     padding-top: 36px;
     padding-bottom: 24px;
 }
+.modal-title.small {
+    font-size: 16px;
+    padding-left: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
 
-.modal-subtitle {
+.modal-subtitle.large {
     font-size: 18px;
-    padding-left: 32px;
+    padding-left: 16px;
+}
+.modal-subtitle.small {
+    font-size: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 12px;
 }
 
 .modal-item-wrapper {
@@ -36,14 +54,26 @@
     width: 100%;
     overflow: hidden;
     justify-content: center;
+}
+.modal-item-wrapper.small {
+    height: 48px;
+}
+.modal-item-wrapper.large {
     height: 72px;
 }
 
 .modal-item {
     flex: 1;
     text-align: center;
-    font-size: 24px;
     cursor: pointer;
+    
+}
+.modal-item.small {
+    font-size: 16px;
+    padding-top: 12px;
+}
+.modal-item.large {
+    font-size: 24px;
     padding-top: 16px;
 }
 

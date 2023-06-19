@@ -68,20 +68,30 @@ const Checks = ({ answers, questions, text }: Props) => {
             }
 
             <Header innerText='Checks' page={4} />
-            <div className='checks-body' style={{ border: isCorrect(questionNumber) ? '1px solid #63B899' : '1px solid #E38181'}}>
-                <div style={{ position: 'absolute', top: 40, right: 40, cursor: 'pointer' }} onClick={() => setIsReportModalOpen(true)}>
-                    <img src={icon} alt="icon" style={{ width: 44, height: 44, margin: 'auto' }}></img>
-                    <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
+            <div className={`checks-body ${window.innerWidth < 500 ? 'small' : 'large' }`} style={{ border: isCorrect(questionNumber) ? '1px solid #63B899' : '1px solid #E38181'}}>
+                <div style={window.innerWidth < 500 ?
+          { position: 'absolute', top: 4, right: 8, cursor: 'pointer' }
+          : { position: 'absolute', top: 40, right: 40, cursor: 'pointer' }} onClick={() => setIsReportModalOpen(true)}>
+                    <img src={icon} alt="icon" style={window.innerWidth < 500 ? 
+          { width: 32, height: 32, margin: 'auto' }
+          : { width: 44, height: 44, margin: 'auto' }}></img>
+                    <div className='noto-sans-kr' style={window.innerWidth < 500 ?
+          { fontSize: 12, color: '#A8A8A8' } : { fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
                 </div>
-                <div style={{ position: 'absolute', top: 40, right: 120, cursor: 'pointer' }} onClick={() => setIsScriptModalOpen(true)}>
-                    <img src={icon2} alt="icon2" style={{ width: 36, height: 36, margin: 'auto', marginTop: 8, }}></img>
-                    <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>스크립트 확인</div>
+                <div style={window.innerWidth < 500 ?
+          { position: 'absolute', top: 4, right: 64, cursor: 'pointer' }
+          : { position: 'absolute', top: 40, right: 40, cursor: 'pointer' }} onClick={() => setIsScriptModalOpen(true)}>
+                    <img src={icon2} alt="icon2" style={window.innerWidth < 500 ? 
+          { width: 24, height: 24, margin: 'auto', marginTop: 8, }
+          : { width: 36, height: 36, margin: 'auto', marginTop: 8, }}></img>
+                    <div className='noto-sans-kr' style={window.innerWidth < 500 ?
+          { fontSize: 12, color: '#A8A8A8' } : { fontSize: 18, color: '#A8A8A8' }}>스크립트 확인</div>
                 </div>
                 <div
                     className='question-number'
                     style={{
                         fontFamily: "Noto Sans KR SemiBold",
-                        fontSize: 44,
+                        fontSize: window.innerWidth < 500 ? 32 : 44,
 
                     }}>
                     Q{questionNumber + 1}
@@ -102,9 +112,9 @@ const Checks = ({ answers, questions, text }: Props) => {
                         `}>{answers[questionNumber]}</div>
                 </div>
             </div>
-            <div className="next-button-wrapper">
-                <div className="next-button">
-                    <div className="checks-item-wrapper">
+            <div className={`next-button-wrapper-checks ${window.innerWidth < 500 ? 'small' : 'large' }`}>
+                <div className={`next-button-checks ${window.innerWidth < 500 ? 'small' : 'large' }`}>
+                    <div className="checks-item-wrapper" style={window.innerWidth < 500 ? {height: 40 } : {}}>
                         {Array(10).fill(0).map((_, i) => (
                             <div
                                 className={`checks-item ${isCorrect(i) ? 'correct-answer' : 'wrong-answer'} ${i == questionNumber ? 'current-answer' : ''}`}
@@ -114,12 +124,12 @@ const Checks = ({ answers, questions, text }: Props) => {
                             </div>
                         ))}
                     </div>
-                    <div className="subtext noto-sans-kr" style={{ fontWeight: 'normal' }}>
+                    <div className={`subtext noto-sans-kr ${window.innerWidth < 500 ? 'small' : 'large' }`} style={{ fontWeight: 'normal' }}>
                         문제 번호를 누르면 해당 문제로 이동할 수 있습니다
                     </div>
                 </div>
                 <button
-                    className={`next-button noto-sans-kr button-activated`}
+                    className={`next-button-checks noto-sans-kr button-activated ${window.innerWidth < 500 ? 'small' : 'large' }`}
                     style={{ width: "66.66%", marginLeft: 24 }}
                     onClick={()=>document.getElementById('download')?.click()}>
                     문제 전체 다운로드

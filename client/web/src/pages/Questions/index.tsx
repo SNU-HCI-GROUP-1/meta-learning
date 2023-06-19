@@ -52,6 +52,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
           ox-button 
           ${answerType == 'O' ? 'o-button' : 'x-button'} 
           ${questionAnswered[questionNumber] ? questionAnswered[questionNumber] == answerType ? 'selected' : 'not-selected' : ''}
+          ${window.innerWidth < 500 ? 'small' : 'large' }
           `}
         onClick={() => {
           if (answers[questionNumber] === answerType) {
@@ -81,13 +82,16 @@ const Questions = ({ answers, setAnswers }: Props) => {
     }
       navigate('/checks');
   }
+  const forceSubmit = () => {
+    navigate('/checks');
+  }
 
   return (
     <Container>
        {isNotDoneModalOpen && 
        <Modal 
        setModalOpen={setIsNotDoneModalOpen} 
-       submitButtonHandler={()=>(null)} 
+       submitButtonHandler={forceSubmit} 
        title="답안 제출" 
        subtitle="아직 풀지 않은 문제가 있습니다. 그래도 제출하시겠습니까?" 
        cancel="취소" 
@@ -106,48 +110,56 @@ const Questions = ({ answers, setAnswers }: Props) => {
        />}
 
       <Header innerText='Questions' page={3} />
-      <div className='text-body'>
-        <div style={{ position: 'absolute', top: 40, right: 40, cursor: 'pointer' }} onClick={() => setIsReportModalOpen(true)}>
-          <img src={icon} alt="icon" style={{ width: 44, height: 44, margin: 'auto' }}></img>
-          <div className='noto-sans-kr' style={{ fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
+      <div className={`text-body-questions ${window.innerWidth < 500 ? 'small' : 'large' }`}>
+        <div style={ window.innerWidth < 500 ?
+          { position: 'absolute', top: 4, right: 8, cursor: 'pointer' }
+          : { position: 'absolute', top: 40, right: 40, cursor: 'pointer' }
+        } 
+        onClick={() => setIsReportModalOpen(true)}>
+          <img src={icon} alt="icon" style={ window.innerWidth < 500 ? 
+          { width: 32, height: 32, margin: 'auto' }
+          : { width: 44, height: 44, margin: 'auto' }
+        }></img>
+          <div className='noto-sans-kr' style={window.innerWidth < 500 ?
+          { fontSize: 12, color: '#A8A8A8' } : { fontSize: 18, color: '#A8A8A8' }}>문제 신고</div>
         </div>
         <div
           className='question-number'
           style={{
             fontFamily: "Noto Sans KR SemiBold",
-            fontSize: 44,
+            fontSize: window.innerWidth < 500 ? 32 : 44,
 
           }}>
           Q{questionNumber+1}
         </div>
-        <div className='question-text noto-sans' style={{padding: window.innerWidth < 500 ? '' : '40px 40px'}}>
+        <div className={`question-text noto-sans ${window.innerWidth < 500 ? 'small' : 'large' }`} style={{padding: window.innerWidth < 500 ? '' : '40px 40px'}}>
           {questions[questionNumber].question}
         </div>
-        <div className='ox-wrapper'>
+        <div className={`ox-wrapper ${window.innerWidth < 500 ? 'small' : 'large' }`}>
           <AnswerButton answerType='O' questionNumber={questionNumber}></AnswerButton>
           <AnswerButton answerType='X' questionNumber={questionNumber}></AnswerButton>
         </div>
       </div>
-      <div className="next-button-wrapper">
-        <div className="next-button">
-          <div className="question-item-wrapper">
+      <div className={`next-button-wrapper-qeustions ${window.innerWidth < 500 ? 'small' : 'large' }`}>
+        <div className="next-button-questions" style={window.innerWidth < 500 ? {marginBottom: 10} : {}}>
+          <div className="question-item-wrapper" style={window.innerWidth < 500 ? {height: 40 } : {}}>
             {Array(10).fill(0).map((_, i) => (
               <div
-                className={`question-item ${questionAnswered[i] ? 'question-answered' : ''}`}
+                className={`question-item ${questionAnswered[i] ? 'question-answered' : ''} ${window.innerWidth < 500 ? 'small' : 'large' }`}
                 onClick={() => setQuestionNumber(i)}
               >
                 {i + 1}
               </div>
             ))}
           </div>
-          <div className="subtext noto-sans-kr" style={{fontWeight: 'normal'}}>
+          <div className={`subtext noto-sans-kr ${window.innerWidth < 500 ? 'small' : 'large' }`} style={{fontWeight: 'normal'}}>
             문제 번호를 누르면 해당 문제로 이동할 수 있습니다
           </div>
         </div>
         <button
-          className={`next-button noto-sans-kr button-activated`}
+          className={`next-button-questions noto-sans-kr button-activated ${window.innerWidth < 500 ? 'small' : 'large' }`}
           onClick={onSubmit}
-          style={{ width: "66.66%", marginLeft: 24 }}>
+          style={window.innerWidth < 500 ? {marginTop: 0} : { width: "66.66%", marginLeft: 24 }}>
           답안 제출
         </button>
       </div>

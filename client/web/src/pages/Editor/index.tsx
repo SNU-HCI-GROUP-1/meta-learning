@@ -86,7 +86,7 @@ const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
           />
         )
       } */}
-      <div className='text-body'>
+      <div className={`text-body ${window.innerWidth < 500 ? 'small' : 'large' }`}>
         {
           isLoading &&
           <div style={{ position: 'absolute', zIndex: 998, backgroundColor: 'rgba(255,255,255,0.8)',  width: '100%', height: '100%'}}>
@@ -121,20 +121,20 @@ const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
       </div>
 
 
-      <div className="next-button-wrapper">
+      <div className={`next-button-wrapper ${window.innerWidth < 500 ? 'small' : 'large' }`}>
         <button
-          className="next-button noto-sans-kr button-disabled" 
-          style={{width: "50%", marginRight: 24 }}
+          className={`next-button noto-sans-kr button-disabled ${window.innerWidth < 500 ? 'small' : 'large' }`} 
+          style={{width: window.innerWidth < 500 ? '50%' : "50%", marginRight: 8 }}
           onClick={()=>navigate('/')}
           >이전</button>
         <button
-          className="next-button noto-sans-kr button-disabled"
-          style={{width: "50%", marginRight: 24 }}
+          className={`next-button noto-sans-kr button-disabled ${window.innerWidth < 500 ? 'small' : 'large' }`}
+          style={{width: window.innerWidth < 500 ? '100%' : "50%", marginRight: 8 }}
           onClick={()=>document.getElementById('download')?.click()}
           >스크립트 다운로드</button>
         <a id='download' href={link} download={fileName}></a>
         <button
-          className={`next-button noto-sans-kr button-activated`}
+          className={`next-button noto-sans-kr button-activated ${window.innerWidth < 500 ? 'small' : 'large' }`}
           onClick={() => onSubmit(QuillRef.current?.getEditor().getText()!)}
         >문제 생성</button>
       </div>

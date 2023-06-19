@@ -17,47 +17,6 @@ import icon from '../../drag-and-drop.png';
 import { uploadFile } from './sendUploadFile';
 import { sendReq } from '../../sendReq';
 
-// const Home = () => {
-//   const [isLoading, setIsLoading] = React.useState(false);
-//   const navigate = useNavigate();
-//   const handleUpload = async (file?: any) => {
-//     console.log(file);
-//     // TODO: Upload file to server
-//     setIsLoading(true);
-//     await timeout(3000);
-//     setIsLoading(false);
-//     navigate('/editor');
-//   }
-//   return (
-//     <Container>
-//       <Header innerText='Upload File' page={1} />
-//       <DragDrop></DragDrop>
-//       {/* <div
-//         style={{
-//           display: 'flex',
-//           justifyContent: 'right',
-//           marginLeft: '20%',
-//           marginRight: '20%',
-//           marginTop: 10,
-//           fontSize: window.innerWidth < 500 ? 8 : 16, fontWeight: 'bold'
-//         }}>
-//         복습하고 싶은 강의의 녹음 파일을 올려주세요
-//       </div>
-//       <div
-//         style={{
-//           display: 'flex',
-//           flexDirection: 'column',
-//           height: '20%',
-//           justifyContent: 'center',
-//           alignItems: 'center',
-//         }}
-//       >
-//       </div> */}
-
-//     </Container>
-//   );
-// }
-
 
 // Drag and Drop component
 interface IFileTypes {
@@ -215,7 +174,7 @@ const Home = ({ setScripts }: Props) => {
     <Container>
       <Header innerText='Upload File' page={1} />
       <div
-        className={`DragDrop ${files.length === 0 ? 'before-upload' : 'after-upload'}`}>
+        className={`DragDrop ${files.length === 0 ? 'before-upload' : 'after-upload'} ${window.innerWidth < 500 ? 'small' : 'large' }`}>
         <input
           type="file"
           id="fileUpload"
@@ -273,14 +232,14 @@ const Home = ({ setScripts }: Props) => {
           }
         </label>
       </div>
-      <div className="next-button-wrapper">
+      <div className={`next-button-wrapper ${window.innerWidth < 500 ? 'small' : 'large' }`}>
         <button
-          className={`next-button noto-sans-kr ${files.length !== 0 && !isLoading ? 'button-activated' : 'button-disabled'}`}
+          className={`next-button noto-sans-kr ${files.length !== 0 && !isLoading ? 'button-activated' : 'button-disabled'}  ${window.innerWidth < 500 ? 'small' : 'large' }`}
           onClick={handleUpload}
           disabled={files.length === 0 || isLoading}
         >스크립트 생성</button>
       </div>
-      <div className="subtext noto-sans-kr">
+      <div className={`subtext noto-sans-kr ${window.innerWidth < 500 ? 'small' : 'large' }`}>
         다른 파일을 선택하고 싶나요? 새로운 파일을 드래그해주세요
       </div>
     </Container>
