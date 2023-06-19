@@ -20,6 +20,7 @@ type Props = {
 const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isQuestionLoaded, setIsQuestionLoaded] = useState(false);
   const [progress, setProgress] = React.useState(0);
 
   const navigate = useNavigate();
@@ -35,10 +36,7 @@ const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
       })).questions;
       setQuestions(questions);
       setScripts(text);
-      // setIsLoading(false);
-      setProgress(100);
-      setTimeout(()=> navigate('/questions'), 100);
-
+      setIsQuestionLoaded(true);
     } catch (error) {
       console.log(error);
       setIsError(true);
@@ -64,14 +62,19 @@ const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
   const link = window.URL.createObjectURL(myFile)
 
   React.useEffect(() => {
-    if (isLoading && isError && progress < 100) {
-      const timer = setTimeout(() => setProgress(progress + 1), 30);
+    if (isLoading && progress < 100) {
+      if (isQuestionLoaded || isError) {
+        const timer = setTimeout(() => setProgress(100), 100);
+        return () => clearTimeout(timer);
+      }
+      const timer = setTimeout(() => setProgress(progress + 1), 100);
       return () => clearTimeout(timer);
     }
     if (progress >= 100) {
       navigate('/questions');
+      return;
     }
-  }, [progress])
+  }, [progress, isQuestionLoaded])
 
 
   return (
@@ -134,7 +137,8 @@ const Editor = ({ scripts, setScripts, setQuestions }: Props) => {
           >스크립트 다운로드</button>
         <a id='download' href={link} download={fileName}></a>
         <button
-          className={`next-button noto-sans-kr button-activated`}
+          className={`next-button noto-sans-kr ${isLoading ? 'button-disabled' : 'button-activated'}`}
+          disabled={isLoading}
           onClick={() => onSubmit(QuillRef.current?.getEditor().getText()!)}
         >문제 생성</button>
       </div>

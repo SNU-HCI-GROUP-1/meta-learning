@@ -1,17 +1,13 @@
 import React from 'react';
-import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
-import testQuestions from '../../testQuestions';
-import { hover } from '@testing-library/user-event/dist/hover';
 import icon from '../../alert.png';
 import icon2 from '../../document.png';
 import "./Checks.css"
 import Modal from '../../Components/Modal';
-import Question from '../../Components/Question/Question';
 import { Question as QuestionType } from '../../App';
-import { useNavigate } from 'react-router-dom';
 import ScriptModal from '../../Components/ScriptModal';
+import { sendReq } from '../../sendReq';
 
 
 type Props = {
@@ -33,19 +29,20 @@ const Checks = ({ answers, questions, text }: Props) => {
 
     var fileName = "questions.txt";
       var fileContent = '';
-      questions.map((q)=>{
+      questions.forEach((q) => {
         fileContent = fileContent + 'Question: ' + q.question + '\nAnswer: ' + q.answer + '\n\n';
       })
       var myFile = new Blob([fileContent], {type: 'text/plain'});
     const link = window.URL.createObjectURL(myFile)
 
-    // answers = ['O', 'X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X'];
-
-    const closeReportModal = () => {
-        setIsReportModalOpen(false);
+    const closeReportModal = async () => {
+      await sendReq('POST', '/send_report', {
+        question: questions[questionNumber].question,
+        answer: questions[questionNumber].answer,
+        reason: 'User Report',
+      });
+      setIsReportModalOpen(false);
     }
-
-    const navigate = useNavigate();
 
     return (
         <Container>
@@ -107,7 +104,7 @@ const Checks = ({ answers, questions, text }: Props) => {
                     <div className="checks-item-wrapper">
                         {Array(10).fill(0).map((_, i) => (
                             <div
-                                className={`checks-item ${isCorrect(i) ? 'correct-answer' : 'wrong-answer'} ${i == questionNumber ? 'current-answer' : ''}`}
+                                className={`checks-item ${isCorrect(i) ? 'correct-answer' : 'wrong-answer'} ${i === questionNumber ? 'current-answer' : ''}`}
                                 onClick={() => setQuestionNumber(i)}
                             >
                                 {i + 1}

@@ -1,17 +1,13 @@
 import React from 'react';
-import StyledButton from '../../Components/Button';
 import Container from '../../Components/Container';
 import Header from '../../Components/Header';
 import testQuestions from '../../testQuestions';
-import { hover } from '@testing-library/user-event/dist/hover';
 import icon from '../../alert.png';
 import "./Questions.css"
 import Modal from '../../Components/Modal';
-import AnswerButton from './AnswerButton';
-import ConfirmModal from './ConfirmModal';
-import Question from '../../Components/Question/Question';
 import { Question as QuestionType } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import { sendReq } from '../../sendReq';
 
 
 type Props = {
@@ -28,7 +24,7 @@ const ANSWER_TYPE = {
 }
 const ANSWER_TYPE_LIST = [ANSWER_TYPE.O, ANSWER_TYPE.X];
 
-const Questions = ({ answers, setAnswers }: Props) => {
+const Questions = ({ answers, questions, setAnswers }: Props) => {
   // 현재 보고 있는 문항 번호
   const [questionNumber, setQuestionNumber] = React.useState(0);
   // 풀은 문제들 나타내는 array
@@ -36,12 +32,17 @@ const Questions = ({ answers, setAnswers }: Props) => {
   // 모달창 관리
   const [isNotDoneModalOpen, setIsNotDoneModalOpen] = React.useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+  questions = questions || testQuestions;
 
-  const closeReportModal = () => {
+  const closeReportModal = async () => {
+    await sendReq('POST', '/send_report', {
+      question: questions[questionNumber].question,
+      answer: questions[questionNumber].answer,
+      reason: 'User Report',
+    });
     setIsReportModalOpen(false);
   }
 
-  const questions = testQuestions;
   const navigate = useNavigate();
   const AnswerButton = ({
     answerType, questionNumber
@@ -50,8 +51,8 @@ const Questions = ({ answers, setAnswers }: Props) => {
       <button
         className={`
           ox-button 
-          ${answerType == 'O' ? 'o-button' : 'x-button'} 
-          ${questionAnswered[questionNumber] ? questionAnswered[questionNumber] == answerType ? 'selected' : 'not-selected' : ''}
+          ${answerType === ANSWER_TYPE.O ? 'o-button' : 'x-button'} 
+          ${questionAnswered[questionNumber] ? questionAnswered[questionNumber] === answerType ? 'selected' : 'not-selected' : ''}
           `}
         onClick={() => {
           if (answers[questionNumber] === answerType) {
@@ -79,7 +80,7 @@ const Questions = ({ answers, setAnswers }: Props) => {
       setIsNotDoneModalOpen(true);
       return;
     }
-      navigate('/checks');
+    navigate('/checks');
   }
 
   return (
@@ -124,8 +125,11 @@ const Questions = ({ answers, setAnswers }: Props) => {
           {questions[questionNumber].question}
         </div>
         <div className='ox-wrapper'>
-          <AnswerButton answerType='O' questionNumber={questionNumber}></AnswerButton>
-          <AnswerButton answerType='X' questionNumber={questionNumber}></AnswerButton>
+          {
+            ANSWER_TYPE_LIST.map((a) => (
+              <AnswerButton answerType={a} questionNumber={questionNumber}></AnswerButton>
+            ))
+          }
         </div>
       </div>
       <div className="next-button-wrapper">
@@ -151,82 +155,6 @@ const Questions = ({ answers, setAnswers }: Props) => {
           답안 제출
         </button>
       </div>
-
-
-
-      {/* <div style={{
-        width: '80%',
-        alignContent: 'center',
-        margin: 'auto',
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'right',
-        }}>
-          <StyledButton
-            style={{
-              borderColor: 'midnightblue',
-              fontSize: 'min(3vw, 20px)',
-            }}
-            onClick={onSubmit}
-          >
-            Confirm
-          </StyledButton>
-        </div>
-        <Question
-          question={questions[questionNumber]}
-          questionInner={questions[questionNumber].question}
-          questionNumber={questionNumber}
-        />
-        <div style={{
-          marginTop: window.innerWidth < 500 ? 20 : 40,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          gap: '5vw',
-        }}>
-          {
-            ANSWER_TYPE_LIST.map((answerType) => (
-              <AnswerButton
-                answers={answers}
-                answerType={answerType}
-                questionNumber={questionNumber}
-                isChecking={isChecking}
-                isNextQuestionAnswered={isNextQuestionAnswered(questionNumber)}
-                setQuestionNumber={setQuestionNumber}
-                setAnswers={setAnswers}
-                setIsChecking={setIsChecking}
-                openModalOnAnswer={openModalOnAnswer}
-              />))
-          }
-        </div>
-        <div style={{
-          minWidth: '240px',
-          margin: 'auto',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          gap: window.innerWidth < 500 ? 10 : 15,
-          marginTop: window.innerWidth < 500 ? 20 : 40,
-        }}>
-          {Array(10).fill(0).map((_, i) => (
-            <div
-              style={{
-                marginTop: '0.5vh',
-                borderRadius: '50%',
-                borderColor: 'midnightblue',
-                backgroundColor: i === questionNumber ? 'midnightblue' : getCircleColor(i),
-                width: 'min(4vw, 20px)',
-                height: 'min(4vw, 20px)',
-                cursor: 'pointer',
-              }}
-              onClick={() => setQuestionNumber(i)}
-            >
-            </div>
-          ))}
-        </div>
-      </div> */}
     </Container>
   );
 }
