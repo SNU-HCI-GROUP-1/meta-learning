@@ -32,6 +32,9 @@ const Questions = ({ answers, questions, setAnswers }: Props) => {
   // 모달창 관리
   const [isNotDoneModalOpen, setIsNotDoneModalOpen] = React.useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+  React.useEffect(() => {
+    setAnswers(Array(10).fill(null));
+  }, []);
   questions = questions || testQuestions;
 
   const closeReportModal = async () => {
@@ -88,7 +91,7 @@ const Questions = ({ answers, questions, setAnswers }: Props) => {
        {isNotDoneModalOpen && 
        <Modal 
        setModalOpen={setIsNotDoneModalOpen} 
-       submitButtonHandler={()=>(null)} 
+       submitButtonHandler={()=>(navigate('/checks'))} 
        title="답안 제출" 
        subtitle="아직 풀지 않은 문제가 있습니다. 그래도 제출하시겠습니까?" 
        cancel="취소" 
